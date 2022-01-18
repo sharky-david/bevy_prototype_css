@@ -24,13 +24,11 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
     let css_context = CssContext::default();
 
-    let test = CssStyle("width: 200px; height: 100%; border-width: 2px;").to_style(&css_context);
-    println!("{:#?}", test);
-
     // root node
     let background = commands
         .spawn_bundle(NodeBundle {
-            style: CssStyle("width: 100%; height: 100%; justify-content: space-between;").to_style(&css_context),
+            style: CssStyle("width: 100%; height: 100%; justify-content: space-between;")
+                .to_style(&css_context),
             color: Color::NONE.into(),
             ..Default::default()
         })
@@ -38,7 +36,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             // left vertical fill (border)
             parent
                 .spawn_bundle(NodeBundle {
-                    style: CssStyle("width: 200px; height: 100%; border-width: 2px;").to_style(&css_context),
+                    style: CssStyle("width: 200px; height: 100%; border-width: 2px;")
+                        .to_style(&css_context),
                     color: Color::rgb(0.65, 0.65, 0.65).into(),
                     ..Default::default()
                 })
@@ -46,21 +45,15 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     // left vertical fill (content)
                     parent
                         .spawn_bundle(NodeBundle {
-                            style: Style {
-                                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                                align_items: AlignItems::FlexEnd,
-                                ..Default::default()
-                            },
+                            style: CssStyle("width: 100%; height: 100%; align-items: flex-end;")
+                                .to_style(&css_context),
                             color: Color::rgb(0.15, 0.15, 0.15).into(),
                             ..Default::default()
                         })
                         .with_children(|parent| {
                             // text
                             parent.spawn_bundle(TextBundle {
-                                style: Style {
-                                    margin: Rect::all(Val::Px(5.0)),
-                                    ..Default::default()
-                                },
+                                style: CssStyle("margin: 5px").to_style(&css_context),
                                 text: Text::with_section(
                                     "Text Example",
                                     TextStyle {
@@ -74,31 +67,19 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                             });
                         });
                 });
-            /*
             // right vertical fill
             parent
                 .spawn_bundle(NodeBundle {
-                    style: Style {
-                        flex_direction: FlexDirection::ColumnReverse,
-                        justify_content: JustifyContent::Center,
-                        size: Size::new(Val::Px(200.0), Val::Percent(100.0)),
-                        ..Default::default()
-                    },
+                    style: CssStyle("width: 200px; height: 100%; flex-direction: column-reverse; justify-content: center;")
+                        .to_style(&css_context),
                     color: Color::rgb(0.15, 0.15, 0.15).into(),
                     ..Default::default()
                 })
                 .with_children(|parent| {
                     // Title
                     parent.spawn_bundle(TextBundle {
-                        style: Style {
-                            size: Size::new(Val::Undefined, Val::Px(25.)),
-                            margin: Rect {
-                                left: Val::Auto,
-                                right: Val::Auto,
-                                ..Default::default()
-                            },
-                            ..Default::default()
-                        },
+                        style: CssStyle("height: 25px; margin-left: auto; margin-right: auto;")
+                            .to_style(&css_context),
                         text: Text::with_section(
                             "Scrolling list",
                             TextStyle {
@@ -113,13 +94,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     // List with hidden overflow
                     parent
                         .spawn_bundle(NodeBundle {
-                            style: Style {
-                                flex_direction: FlexDirection::ColumnReverse,
-                                align_self: AlignSelf::Center,
-                                size: Size::new(Val::Percent(100.0), Val::Percent(50.0)),
-                                overflow: Overflow::Hidden,
-                                ..Default::default()
-                            },
+                            style: CssStyle("width: 100%; height: 50%; flex-direction: column-reverse; align-self: center; overflow: hidden;")
+                                .to_style(&css_context),
                             color: Color::rgb(0.10, 0.10, 0.10).into(),
                             ..Default::default()
                         })
@@ -127,12 +103,9 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                             // Moving panel
                             parent
                                 .spawn_bundle(NodeBundle {
-                                    style: Style {
-                                        flex_direction: FlexDirection::ColumnReverse,
-                                        flex_grow: 1.0,
-                                        max_size: Size::new(Val::Undefined, Val::Undefined),
-                                        ..Default::default()
-                                    },
+                                    // @fixme `Style` defines `size`, `min_size`, and `max_size` with `Val::Auto`, not `Val::Undefined`
+                                    style: CssStyle("flex-direction: column-reverse; flex-grow: 1;")
+                                        .to_style(&css_context),
                                     color: Color::NONE.into(),
                                     ..Default::default()
                                 })
@@ -141,16 +114,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                                     // List items
                                     for i in 0..30 {
                                         parent.spawn_bundle(TextBundle {
-                                            style: Style {
-                                                flex_shrink: 0.,
-                                                size: Size::new(Val::Undefined, Val::Px(20.)),
-                                                margin: Rect {
-                                                    left: Val::Auto,
-                                                    right: Val::Auto,
-                                                    ..Default::default()
-                                                },
-                                                ..Default::default()
-                                            },
+                                            style: CssStyle("height: 20px; flex-shrink: 0; margin-left: auto; margin-right: auto;")
+                                                .to_style(&css_context),
                                             text: Text::with_section(
                                                 format!("Item {}", i),
                                                 TextStyle {
@@ -170,26 +135,14 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             // absolute positioning
             parent
                 .spawn_bundle(NodeBundle {
-                    style: Style {
-                        size: Size::new(Val::Px(200.0), Val::Px(200.0)),
-                        position_type: PositionType::Absolute,
-                        position: Rect {
-                            left: Val::Px(210.0),
-                            bottom: Val::Px(10.0),
-                            ..Default::default()
-                        },
-                        border: Rect::all(Val::Px(20.0)),
-                        ..Default::default()
-                    },
+                    style: CssStyle("width: 200px; height: 200px; position: absolute; left: 210px; bottom: 10px; border-width: 20px;")
+                        .to_style(&css_context),
                     color: Color::rgb(0.4, 0.4, 1.0).into(),
                     ..Default::default()
                 })
                 .with_children(|parent| {
                     parent.spawn_bundle(NodeBundle {
-                        style: Style {
-                            size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                            ..Default::default()
-                        },
+                        style: CssStyle("width: 100%; height: 100%;").to_style(&css_context),
                         color: Color::rgb(0.8, 0.8, 1.0).into(),
                         ..Default::default()
                     });
@@ -197,81 +150,41 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             // render order test: reddest in the back, whitest in the front (flex center)
             parent
                 .spawn_bundle(NodeBundle {
-                    style: Style {
-                        size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                        position_type: PositionType::Absolute,
-                        align_items: AlignItems::Center,
-                        justify_content: JustifyContent::Center,
-                        ..Default::default()
-                    },
+                    style: CssStyle("width: 100%; height: 100%; position: absolute; align-items: center; justify-content: center;")
+                        .to_style(&css_context),
                     color: Color::NONE.into(),
                     ..Default::default()
                 })
                 .with_children(|parent| {
                     parent
                         .spawn_bundle(NodeBundle {
-                            style: Style {
-                                size: Size::new(Val::Px(100.0), Val::Px(100.0)),
-                                ..Default::default()
-                            },
+                            style: CssStyle("width: 100px; height: 100px;").to_style(&css_context),
                             color: Color::rgb(1.0, 0.0, 0.0).into(),
                             ..Default::default()
                         })
                         .with_children(|parent| {
                             parent.spawn_bundle(NodeBundle {
-                                style: Style {
-                                    size: Size::new(Val::Px(100.0), Val::Px(100.0)),
-                                    position_type: PositionType::Absolute,
-                                    position: Rect {
-                                        left: Val::Px(20.0),
-                                        bottom: Val::Px(20.0),
-                                        ..Default::default()
-                                    },
-                                    ..Default::default()
-                                },
+                                style: CssStyle("width: 100px; height: 100px; position: absolute; left: 20px; bottom: 20px;")
+                                    .to_style(&css_context),
                                 color: Color::rgb(1.0, 0.3, 0.3).into(),
                                 ..Default::default()
                             });
                             parent.spawn_bundle(NodeBundle {
-                                style: Style {
-                                    size: Size::new(Val::Px(100.0), Val::Px(100.0)),
-                                    position_type: PositionType::Absolute,
-                                    position: Rect {
-                                        left: Val::Px(40.0),
-                                        bottom: Val::Px(40.0),
-                                        ..Default::default()
-                                    },
-                                    ..Default::default()
-                                },
+                                style: CssStyle("width: 100px; height: 100px; position: absolute; left: 40px; bottom: 40px;")
+                                    .to_style(&css_context),
                                 color: Color::rgb(1.0, 0.5, 0.5).into(),
                                 ..Default::default()
                             });
                             parent.spawn_bundle(NodeBundle {
-                                style: Style {
-                                    size: Size::new(Val::Px(100.0), Val::Px(100.0)),
-                                    position_type: PositionType::Absolute,
-                                    position: Rect {
-                                        left: Val::Px(60.0),
-                                        bottom: Val::Px(60.0),
-                                        ..Default::default()
-                                    },
-                                    ..Default::default()
-                                },
+                                style: CssStyle("width: 100px; height: 100px; position: absolute; left: 60px; bottom: 60px;")
+                                    .to_style(&css_context),
                                 color: Color::rgb(1.0, 0.7, 0.7).into(),
                                 ..Default::default()
                             });
                             // alpha test
                             parent.spawn_bundle(NodeBundle {
-                                style: Style {
-                                    size: Size::new(Val::Px(100.0), Val::Px(100.0)),
-                                    position_type: PositionType::Absolute,
-                                    position: Rect {
-                                        left: Val::Px(80.0),
-                                        bottom: Val::Px(80.0),
-                                        ..Default::default()
-                                    },
-                                    ..Default::default()
-                                },
+                                style: CssStyle("width: 100px; height: 100px; position: absolute; left: 80px; bottom: 80px;")
+                                    .to_style(&css_context),
                                 color: Color::rgba(1.0, 0.9, 0.9, 0.4).into(),
                                 ..Default::default()
                             });
@@ -280,28 +193,19 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             // bevy logo (flex center)
             parent
                 .spawn_bundle(NodeBundle {
-                    style: Style {
-                        size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                        position_type: PositionType::Absolute,
-                        justify_content: JustifyContent::Center,
-                        align_items: AlignItems::FlexEnd,
-                        ..Default::default()
-                    },
+                    style: CssStyle("width: 100%; height: 100%; position: absolute; justify-content: center; align-items: flex-end")
+                        .to_style(&css_context),
                     color: Color::NONE.into(),
                     ..Default::default()
                 })
                 .with_children(|parent| {
                     // bevy logo (image)
                     parent.spawn_bundle(ImageBundle {
-                        style: Style {
-                            size: Size::new(Val::Px(500.0), Val::Auto),
-                            ..Default::default()
-                        },
+                        style: CssStyle("width: 500px; height: auto;").to_style(&css_context),
                         image: asset_server.load("branding/bevy_logo_dark_big.png").into(),
                         ..Default::default()
                     });
                 });
-            */
         });
 }
 
