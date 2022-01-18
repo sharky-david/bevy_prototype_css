@@ -1,0 +1,29 @@
+[package]
+name = "bevy_prototype_css"
+version = "0.1.0"
+edition = "2021"
+categories = ["game-engines", "gui", "ui"]
+description = "A plugin to add CSS support to the Bevy game engine"
+exclude = ["assets/**/*"]
+keywords = ["bevy", "ui", "gui"]
+readme = "Readme.md"
+license = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+members = ["css"]
+
+[dependencies]
+css = { path = "css" }
+
+[dev-dependencies]
+bevy = "0.6.0"
+
+[[example]]
+name = "bevy_ui_inline"
+path = "examples/bevy_ui_inline.rs"
+
+[[example]]
+name = "bevy_ui_stylesheet"
+path = "examples/bevy_ui_stylesheet.rs"
