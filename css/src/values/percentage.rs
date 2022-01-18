@@ -77,6 +77,18 @@ impl Percentage {
         Ok(Self::new(self.value + that.value))
     }
 
+    /// The percentage value mapped to the range (0% == 0.0), (100% == 100.0)
+    #[inline]
+    pub fn as_number(&self) -> f32 {
+        self.value * 100.0
+    }
+
+    /// The percentage value mapped to the range (0% == 0.0), (100% == 1.0)
+    #[inline]
+    pub fn as_fraction(&self) -> f32 {
+        self.value
+    }
+
     /// It is the caller's responsibility to only pass `Token::Percentage` tokens
     pub(super) fn from_pc_token<'i>(
         token: &Token<'i>,

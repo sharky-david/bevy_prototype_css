@@ -24,7 +24,8 @@ impl ContextualFrom<LengthPercentageOrAuto> for ui::Val {
         match len {
             LengthPercentageOrAuto::Auto => ui::Val::Auto,
             LengthPercentageOrAuto::NotAuto(len_pc) => match len_pc {
-                LengthPercentage::Percentage(pc) => ui::Val::Percent(pc.value),
+                // ui::Val::Percent takes values of 0.0 to 100.0 (not 0.0 to 1.0)
+                LengthPercentage::Percentage(pc) => ui::Val::Percent(pc.as_number()),
                 LengthPercentage::Length(len) => ui::Val::Px(len.to_computed_px(context))
             },
         }
