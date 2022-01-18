@@ -80,11 +80,11 @@ impl BevyPropertyDeclaration {
             Self::Display(display) => style.display = display,
             Self::Direction(direction) => style.direction = direction,
             Self::Width(width) => style.size.width = width.contextual_into(context),
-            Self::Height(height) => style.size.width = height.contextual_into(context),
+            Self::Height(height) => style.size.height = height.contextual_into(context),
             Self::MinWidth(min_width) => style.min_size.width = min_width.contextual_into(context),
-            Self::MinHeight(min_height) => style.min_size.width = min_height.contextual_into(context),
+            Self::MinHeight(min_height) => style.min_size.height = min_height.contextual_into(context),
             Self::MaxWidth(max_width) => style.max_size.width = max_width.contextual_into(context),
-            Self::MaxHeight(max_height) => style.max_size.width = max_height.contextual_into(context),
+            Self::MaxHeight(max_height) => style.max_size.height = max_height.contextual_into(context),
             Self::Overflow(overflow) => style.overflow = overflow,
 
             // Position
