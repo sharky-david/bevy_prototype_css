@@ -53,21 +53,6 @@ impl AbsoluteLength {
     }
 
     #[inline]
-    fn try_sum(&self, that: &Self) -> Result<Self, ()> {
-        Ok(match (self, that) {
-            (Self::Px(a), Self::Px(b)) => Self::Px(a + b),
-            (Self::Mm(a), Self::Mm(b)) => Self::Mm(a + b),
-            (Self::Cm(a), Self::Cm(b)) => Self::Cm(a + b),
-            (Self::Q (a), Self::Q (b)) => Self::Q (a + b),
-            (Self::In(a), Self::In(b)) => Self::In(a + b),
-            (Self::Pc(a), Self::Pc(b)) => Self::Pc(a + b),
-            (Self::Pt(a), Self::Pt(b)) => Self::Pt(a + b),
-            // Default to pixels
-            (a, b) => Self::Px(a.to_px() + b.to_px()),
-        })
-    }
-
-    #[inline]
     pub fn to_computed_value(&self) -> f32 {
         self.to_px()
     }
@@ -168,20 +153,6 @@ impl FontRelativeLength {
         match *self {
             Em(v)  | Rem(v) | Ex(v)  | Ch(v)  => v,
         }
-    }
-
-    fn try_sum(&self, that: &Self) -> Result<Self, ()> {
-        // `self` must be the same enum variant as `that`
-        if std::mem::discriminant(self) != std::mem::discriminant(that) {
-            return Err(())
-        }
-        // Because of the discriminant check, we know `self` and `that` are the same enum variant
-        Ok(match self {
-            &Self::Em (self_value) => Self::Em (self_value + that.raw_value()),
-            &Self::Rem(self_value) => Self::Rem(self_value + that.raw_value()),
-            &Self::Ex (self_value) => Self::Ex (self_value + that.raw_value()),
-            &Self::Ch (self_value) => Self::Ch (self_value + that.raw_value()),
-        })
     }
 
     pub fn to_px(
@@ -286,20 +257,6 @@ impl ViewportRelativeLength {
         }
     }
 
-    fn try_sum(&self, that: &Self) -> Result<Self, ()> {
-        // `self` must be the same enum variant as `that`
-        if std::mem::discriminant(self) != std::mem::discriminant(that) {
-            return Err(())
-        }
-        // Because of the discriminant check, we know `self` and `that` are the same enum variant
-        Ok(match *self {
-            Self::Vw  (self_value) => Self::Vw  (self_value + that.raw_value()),
-            Self::Vh  (self_value) => Self::Vh  (self_value + that.raw_value()),
-            Self::Vmin(self_value) => Self::Vmin(self_value + that.raw_value()),
-            Self::Vmax(self_value) => Self::Vmax(self_value + that.raw_value()),
-        })
-    }
-
     pub fn to_px(
         &self,
         viewport_size: &Vec2
@@ -393,24 +350,6 @@ impl NoCalcLength {
             Self::FontRelative(v) => v,
             Self::ViewportRelative(v) => v,
         }
-    }
-
-    #[inline]
-    fn try_sum(&self, that: &Self) -> Result<Self, ()> {
-        // `self` must be the same enum variant as `that`
-        if std::mem::discriminant(self) != std::mem::discriminant(that) {
-            return Err(())
-        }
-        // Because of the discriminant check, we know `self` and `that` are the same enum variant
-        Ok(match (self, that) {
-            (Self::Absolute(this), Self::Absolute(that)) =>
-                Self::Absolute(this.try_sum(that)?),
-            (Self::FontRelative(this), Self::FontRelative(that)) =>
-                Self::FontRelative(this.try_sum(that)?),
-            (Self::ViewportRelative(this), Self::ViewportRelative(that)) =>
-                Self::ViewportRelative(this.try_sum(that)?),
-            _ => unreachable!()
-        })
     }
 
     pub fn parse_dimension<'i>(
@@ -587,23 +526,10 @@ impl Length {
         value
     }
 
-    #[inline]
-    fn try_sum(&self, that: &Self) -> Result<Self, ()> {
-        // `self` must be the same enum variant as `that`
-        if std::mem::discriminant(self) != std::mem::discriminant(that) {
-            return Err(())
-        }
-        // Because of the discriminant check, we know `self` and `that` are the same enum variant
-        Ok(match (self, that) {
-            (Self::NoCalc(self_value), Self::NoCalc(that)) =>
-                Self::NoCalc(self_value.try_sum(that)?),
-        })
-    }
-
     /// It is the caller's responsibility to only pass `Token::Function` tokens
     pub(super) fn from_func_token<'i>(
         token: &Token<'i>,
-        allowed_values: AllowedValues,
+        _allowed_values: AllowedValues,
     ) -> Result<Self, BevyCssParsingErrorKind<'i>> {
         assert!(matches!(token, Token::Function(_)));
         if let Token::Function(ref name) = *token {
@@ -627,7 +553,7 @@ impl Length {
                 NoCalcLength::from_num_token(token, allowed_values)
                     .map(Self::NoCalc)
                     .map_err(|err| start.new_custom_error(err)),
-            Token::Function(ref name) =>
+            Token::Function { .. } =>
                 Self::from_func_token(token, allowed_values)
                     .map_err(|err| start.new_custom_error(err)),
             _ => Err(start.new_unexpected_token_error(token.clone()))
@@ -749,31 +675,10 @@ impl LengthPercentage {
         }
     }
 
-    #[inline]
-    fn zero_percent() -> Self {
-        Self::from(Percentage::zero())
-    }
-
-    #[inline]
-    fn try_sum(&self, that: &Self) -> Result<Self, ()> {
-        // `self` must be the same enum variant as `that`
-        if std::mem::discriminant(self) != std::mem::discriminant(that) {
-            return Err(())
-        }
-        // Because of the discriminant check, we know `self` and `that` are the same enum variant
-        Ok(match (self, that) {
-            (Self::Length(this), Self::Length(that)) =>
-                Self::Length(this.try_sum(that)?),
-            (Self::Percentage(this), Self::Percentage(that)) =>
-                Self::Percentage(this.try_sum(that)?),
-            _ => unreachable!()
-        })
-    }
-
     /// It is the caller's responsibility to only pass `Token::Function` tokens
     pub(super) fn from_func_token<'i>(
         token: &Token<'i>,
-        allowed_values: AllowedValues,
+        _allowed_values: AllowedValues,
     ) -> Result<Self, BevyCssParsingErrorKind<'i>> {
         assert!(matches!(token, Token::Function(_)));
         if let Token::Function(ref name) = *token {
@@ -801,7 +706,7 @@ impl LengthPercentage {
                 NoCalcLength::from_num_token(token, allowed_values)
                     .map(Self::Length)
                     .map_err(|err| start.new_custom_error(err)),
-            Token::Function(ref name) =>
+            Token::Function { .. } =>
                 Self::from_func_token(token, allowed_values)
                     .map_err(|err| start.new_custom_error(err)),
             _ => Err(start.new_unexpected_token_error(token.clone()))
@@ -951,14 +856,14 @@ impl Parse for NonNegativeLengthPercentage {
     }
 }
 
-/// A wrapper around `Length` that allows the use of `auto`
-pub type LengthOrAuto = MaybeAuto<Length>;
+//// A wrapper around `Length` that allows the use of `auto`
+//pub type LengthOrAuto = MaybeAuto<Length>;
 
 /// A wrapper around `LengthPercentage` that allows the use of `auto`
 pub type LengthPercentageOrAuto = MaybeAuto<LengthPercentage>;
 
-/// A wrapper around `NonNegativeLength` that allows the use of `auto`
-pub type NonNegativeLengthOrAuto = MaybeAuto<NonNegativeLength>;
+//// A wrapper around `NonNegativeLength` that allows the use of `auto`
+//pub type NonNegativeLengthOrAuto = MaybeAuto<NonNegativeLength>;
 
-/// A wrapper around `NonNegativeLengthPercentage` that allows the use of `auto`
-pub type NonNegativeLengthPercentageOrAuto = MaybeAuto<NonNegativeLengthPercentage>;
+//// A wrapper around `NonNegativeLengthPercentage` that allows the use of `auto`
+//pub type NonNegativeLengthPercentageOrAuto = MaybeAuto<NonNegativeLengthPercentage>;

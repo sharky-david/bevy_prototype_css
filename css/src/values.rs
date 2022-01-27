@@ -12,6 +12,6 @@ pub use parse::Parse;
 pub use length::{
     Length, LengthPercentage, LengthPercentageOrAuto,
 };
-pub use number::{Number, NumberOrAuto, NonNegativeNumber, NonNegativeNumberOrAuto};
+pub use number::{Number, NonNegativeNumber};
 pub use ratio::{Ratio, RatioOrAuto};
 pub use shorthand::SidedValue;

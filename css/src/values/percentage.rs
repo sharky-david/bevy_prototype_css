@@ -109,7 +109,7 @@ impl Percentage {
     /// It is the caller's responsibility to only pass `Token::Function` tokens
     pub(super) fn from_func_token<'i>(
         token: &Token<'i>,
-        allowed_values: AllowedValues,
+        _allowed_values: AllowedValues,
     ) -> Result<Self, BevyCssParsingErrorKind<'i>> {
         assert!(matches!(token, Token::Function(_)));
         if let Token::Function(ref name) = *token {

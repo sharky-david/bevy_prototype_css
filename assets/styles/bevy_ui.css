@@ -1,2 +1,40 @@
-#background-container { width: 100%; height: 100%; justify-content: space-between; background-color: rgba(0, 0, 0, 0) }
+#background-container { justify-content: space-between; }
+
+#left-bar { align-items: flex-end; }
+#right-bar { flex-direction: column-reverse; justify-content: center; }
+
+#scroll-title { height: 25px; }
+#scroll-list {
+    flex-direction: column-reverse;
+    align-self: center;
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+}
+
+#square-bottom-left { left: 210px; bottom: 10px; }
+
+#order-container { align-items: center; justify-content: center; }
+#square-order-1 {  }
+#square-order-2 { left: 20px; bottom: 20px; }
+#square-order-3 { left: 40px; bottom: 40px; }
+#square-order-4 { left: 60px; bottom: 60px; }
+#square-order-5 { left: 80px; bottom: 80px; }
+
+#logo-container { justify-content: center; align-items: flex-end; }
+#logo { width: 500px; height: auto; }
+
+.scroller.panel { flex-direction: column-reverse; flex-grow: 1; }
+.scroller.item { flex-shrink: 0; height: 20px; }
+
+.fill-container { width: 100%; height: 100%; }
 .sidebar { width: 200px; height: 100%; }
+
+.border-2px { border-width: 2px; }
+.border-20px { border-width: 20px; }
+.margin-5px { margin: 5px; }
+.margin-center { margin-right: auto; margin-left: auto; }
+
+.absolute { position: absolute; }
+.square-200px { width: 200px; height: 200px; }
+.square-100px { width: 100px; height: 100px; }

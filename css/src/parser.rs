@@ -12,9 +12,7 @@ use crate::{
     rules::{
         BevyCssRule, BevyStyleRule
     },
-    selectors::{
-        BevySelectorList, BevySelectorParser
-    },
+    selectors::BevySelectorList,
 };
 
 /// Handle CSS 'sheet' style strings with selectors, @-rules (currently ignored), etc.
@@ -41,10 +39,11 @@ impl BevySheetParser {
     }
 }
 
-/// Top level parser that delegates parsing to more specialised parsers based on what is encountered
+/// Top level parser that may delegates parsing to more specialised parsers based on what is
+/// encountered
 pub struct BevyTopLevelParser;
 
-impl<'i> QualifiedRuleParser<'i> for BevyTopLevelParser {       // aka 'normal' style rule parser
+impl<'i> QualifiedRuleParser<'i> for BevyTopLevelParser {    // aka 'normal' style rule parser
     type Prelude = BevySelectorList;
     type QualifiedRule = BevyCssRule;
     type Error = BevyCssParsingErrorKind<'i>;
@@ -52,15 +51,16 @@ impl<'i> QualifiedRuleParser<'i> for BevyTopLevelParser {       // aka 'normal' 
     fn parse_prelude<'t>(                                    // Prelude here means selector list
         &mut self, input: &mut Parser<'i, 't>
     ) -> Result<Self::Prelude, BevyCssParsingError<'i>> {
-        BevySelectorList::parse(&BevySelectorParser, input)
+        BevySelectorList::parse(input)
     }
 
     fn parse_block<'t>(                                      // For the bit between the curly braces
-        &mut self, prelude: Self::Prelude,
-        start: &ParserState,
+        &mut self,
+        prelude: Self::Prelude,
+        _start: &ParserState,
         input: &mut Parser<'i, 't>
     ) -> Result<Self::QualifiedRule, BevyCssParsingError<'i>> {
-        let mut declarations = BevyPropertyListParser::parse_with(input);
+        let declarations = BevyPropertyListParser::parse_with(input);
         let style = BevyStyleRule {
             selectors: prelude,
             declarations: Arc::new(declarations),
@@ -126,7 +126,7 @@ impl<'i> DeclarationParser<'i> for BevyPropertyDeclarationParser {
 
         // Consume any `!important` rules
         // @fixme currently !important rules aren't treated any differently
-        let important = match input.try_parse(cssparser::parse_important) {
+        let _important = match input.try_parse(cssparser::parse_important) {
             Ok(()) => true,
             Err(_) => false,
         };

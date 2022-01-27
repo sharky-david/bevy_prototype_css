@@ -1,73 +1,85 @@
 use std::fmt;
-use std::fmt::{Formatter, Write};
-use bevy::ecs::component::ComponentId;
-use cssparser::ToCss;
-use selectors::{parser::{
-    NonTSPseudoClass, PseudoElement, Parser as SelectorParser, Selector, SelectorImpl
-}, SelectorList, context::{MatchingContext, MatchingMode, QuirksMode}, matching::matches_selector, Element, OpaqueElement};
-use selectors::attr::{AttrSelectorOperation, CaseSensitivity, NamespaceConstraint};
-use selectors::matching::ElementSelectorFlags;
 use smallvec::SmallVec;
-use crate::{
-    css_strings::CssString,
-    errors::BevyCssParsingErrorKind,
+
+use cssparser::{
+    Parser as CssParser,
+    ToCss
+};
+use selectors::{
+    attr::{AttrSelectorOperation, CaseSensitivity, NamespaceConstraint},
+    context::{MatchingContext, MatchingMode, QuirksMode},
+    matching::{matches_selector, ElementSelectorFlags},
+    parser::{NonTSPseudoClass, PseudoElement, Parser as SelectorParser, Selector, SelectorImpl},
+    SelectorList, Element, OpaqueElement
 };
 
-// @todo matching/filtering on a list of component names
-pub trait BevyCssSelectorMatching {
-    /// Tests if the given id/classes match this selector(s)
-    fn matches(&self, id: String, classes: SmallVec<[String; 1]>) -> bool;
-}
+use crate::{
+    css_strings::CssString,
+    errors::{BevyCssParsingError, BevyCssParsingErrorKind},
+};
 
 /// A list of selectors that apply to a particular `BevyStyleRule`, as defined in a .css sheet
+#[derive(Clone)]
 pub struct BevySelectorList(pub SmallVec<[BevyCssSelector; 1]>);
 
 // SelectorList<BevyCssSelectorKinds>;
 
 impl BevySelectorList {
-    pub fn matches(&self, id: String, classes: SmallVec<[String; 1]>) -> bool {
+    #[inline]
+    pub fn parse<'i, 't>(input: &mut CssParser<'i, 't>) -> Result<Self, BevyCssParsingError<'i>> {
+        let selector_list = SelectorList::parse(
+            &BevySelectorParser,
+            input
+        )?;
+        let selectors = selector_list.0.into_iter().map(BevyCssSelector).collect();
+        Ok(Self(selectors))
+    }
+
+    pub fn matches(&self, id: Option<&String>, classes: Option<&SmallVec<[String; 1]>>) -> bool {
         self.0.iter().any(|s| s.matches(id, classes))
     }
 }
 
 impl fmt::Display for BevySelectorList {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut first = true;
         for sel in self.0.iter() {
             if !first {
-                f.write_str(", ")
+                f.write_str(", ")?;
             }
             first = false;
-            sel.0.to_css(f)
+            sel.0.to_css(f)?;
         }
         Ok(())
     }
 }
 
 impl fmt::Debug for BevySelectorList {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(self, f)
     }
 }
 
 /// A particular selector (as defined in a .css sheet) that could match an entity with the right
 /// `id` and `classes`
+#[derive(Clone)]
 pub struct BevyCssSelector(Selector<BevyCssSelectorKinds>);
 
 impl BevyCssSelector {
     #[inline]
-    pub fn matches(&self, id: String, classes: SmallVec<[String; 1]>) -> bool {
+    pub fn matches(&self, id: Option<&String>, classes: Option<&SmallVec<[String; 1]>>) -> bool {
         let mut context = MatchingContext::new(
             MatchingMode::Normal,
             None,
             None,
             QuirksMode::NoQuirks
         );
+        let element = BevyElement { id, classes };
         matches_selector(
             &self.0,
             0,
             None,
-            element,
+            &element,
             &mut context,
             &mut |_, _| {}
         )
@@ -79,13 +91,13 @@ impl BevyCssSelector {
 }
 
 impl fmt::Display for BevyCssSelector {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.0.to_css(f)
     }
 }
 
 impl fmt::Debug for BevyCssSelector {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Display::fmt(self, f)
     }
 }
@@ -148,12 +160,12 @@ impl<'i> SelectorParser<'i> for BevySelectorParser {
 }
 
 #[derive(Copy, Clone, Debug)]
-struct BevyElement {
-    id: Option<String>,
-    classes: SmallVec<[String; 1]>
+struct BevyElement<'a> {
+    id: Option<&'a String>,
+    classes: Option<&'a SmallVec<[String; 1]>>
 }
 
-impl Element for BevyElement {
+impl<'a> Element for BevyElement<'a> {
     type Impl = BevyCssSelectorKinds;
 
     #[inline]
@@ -260,9 +272,12 @@ impl Element for BevyElement {
 
     #[inline]
     fn has_class(&self, name: &CssString, case_sensitivity: CaseSensitivity) -> bool {
-        self.classes.iter().any(|class|
-            case_sensitivity.eq(class.as_bytes(), name.as_bytes())
-        )
+        match self.classes {
+            Some(classes) => classes.iter().any(|class|
+                case_sensitivity.eq(class.as_bytes(), name.as_bytes())
+            ),
+            None => false
+        }
     }
 
     #[inline]

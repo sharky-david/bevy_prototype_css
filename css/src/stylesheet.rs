@@ -13,7 +13,7 @@ use crate::{
 };
 
 /// This struct doesn't actually store any styles in memory.  It is just a way to create a `Style`
-/// struct from a CSS declaration block string.
+/// struct from a CSS declaration block string (inline).
 pub struct CssStyle<'i>(pub &'i str);
 
 impl<'i> CssStyle<'i> {

@@ -3,7 +3,7 @@ use cssparser::{Parser, Token};
 use crate::{
     errors::{BevyCssParsingError, BevyCssParsingErrorKind},
     values::{
-        generic::{NonNegative, Numeric, MaybeAuto},
+        generic::{NonNegative, Numeric},
         parse::{AllowedValues, Parse},
     },
 };
@@ -35,7 +35,7 @@ impl Number {
     /// It is the caller's responsibility to only pass `Token::Function` tokens
     pub(super) fn from_func_token<'i>(
         token: &Token<'i>,
-        allowed_values: AllowedValues,
+        _allowed_values: AllowedValues,
     ) -> Result<Self, BevyCssParsingErrorKind<'i>> {
         assert!(matches!(token, Token::Function(_)));
         if let Token::Function(ref name) = *token {
@@ -54,7 +54,7 @@ impl Number {
             Token::Number { .. } =>
                 Self::from_num_token(token, allowed_values)
                     .map_err(|err| start.new_custom_error(err)),
-            Token::Function(ref name) =>
+            Token::Function { .. } =>
                 Self::from_func_token(token, allowed_values)
                     .map_err(|err| start.new_custom_error(err)),
             _ => Err(start.new_unexpected_token_error(token.clone()))
@@ -128,8 +128,8 @@ impl Parse for NonNegativeNumber {
     }
 }
 
-/// A wrapper around `Number` that allows the use of `auto`
-pub type NumberOrAuto = MaybeAuto<Number>;
+//// A wrapper around `Number` that allows the use of `auto`
+//pub type NumberOrAuto = MaybeAuto<Number>;
 
-/// A wrapper around `NonNegativeLength` that allows the use of `auto`
-pub type NonNegativeNumberOrAuto = MaybeAuto<NonNegativeNumber>;
+//// A wrapper around `NonNegativeLength` that allows the use of `auto`
+//pub type NonNegativeNumberOrAuto = MaybeAuto<NonNegativeNumber>;
