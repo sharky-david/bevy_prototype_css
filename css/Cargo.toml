@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.6"
+anyhow = "1.0.4"
 cssparser = "0.28.1"
 selectors = "0.23.0"
-anyhow = "1.0.4"
+smallvec = "1.8.0"

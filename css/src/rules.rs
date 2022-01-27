@@ -24,21 +24,3 @@ pub struct BevyStyleRule {
     // Rc is used to avoid cloning of the declarations vec for every selector in the list above
     pub declarations: Arc<Vec<BevyPropertyDeclaration>>
 }
-
-impl BevyStyleRule {
-    pub fn is_applied(&self, id: Option<&CssId>, classes: Option<&CssClass>) -> bool {
-        match self.selectors.0.first() {
-            None => false,
-            Some(selector) => match selector {
-                _ if selector.is_universal() => true,
-                _ if id.is_none() && classes.is_none() => false,
-                _ => {
-                    for part in selector.iter() {
-                        todo!("Implement selector matching")
-                    }
-                    false
-                }
-            }
-        }
-    }
-}

@@ -1,6 +1,9 @@
 use bevy::prelude::*;
-use crate::rules::BevyCssRule;
-use crate::stylesheet::{CssStylesheet, CssStylesheetLoader};
+use smallvec::SmallVec;
+use crate::{
+    rules::BevyCssRule,
+    stylesheet::{CssStylesheet, CssStylesheetLoader}
+};
 
 pub struct CssPlugin;
 
@@ -30,7 +33,7 @@ impl From<&str> for CssId {
 }
 
 #[derive(Component, Debug)]
-pub struct CssClass(Vec<String>);
+pub struct CssClass(SmallVec<[String; 1]>);
 
 impl From<&str> for CssClass {
     fn from(classes: &str) -> Self {
@@ -41,32 +44,6 @@ impl From<&str> for CssClass {
 impl From<String> for CssClass {
     fn from(classes: String) -> Self {
         Self::from(classes.as_str())
-    }
-}
-
-#[derive(Component, Debug)]
-pub enum CssType {
-    Node,
-    Text,
-    Image,
-    Custom(String),
-}
-
-impl From<&str> for CssType {
-    fn from(css_type: &str) -> Self {
-        assert!(!css_type.contains(' '));
-        match css_type.to_lowercase().as_str() {
-            "node" => Self::Node,
-            "text" => Self::Text,
-            "image" => Self::Image,
-            s => Self::Custom(s.to_string()),
-        }
-    }
-}
-
-impl From<String> for CssType {
-    fn from(css_type: String) -> Self {
-        Self::from(css_type.as_str())
     }
 }
 
