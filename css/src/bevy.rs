@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use smallvec::SmallVec;
 use crate::{
-    CssContext,
+    context::CssContext,
     rules::{BevyCssRule, BevyStyleRule},
     stylesheet::{CssStylesheet, CssStylesheetLoader}
 };
@@ -48,29 +48,42 @@ impl From<String> for CssClass {
     }
 }
 
-fn apply_styles(
-    stylesheets: Res<Assets<CssStylesheet>>,
-    mut styles_query: Query<(&mut Style, Option<&CssId>, Option<&CssClass>)>,
-) {
-    // @todo Only update styles when the style context changes or a stylesheet is loaded/changed
-    // @todo Make the order of allied sheet deterministic (need to decided on cascading rules)
-    // @todo Add support for Component matching/selectors
-    for (_handle, stylesheet) in stylesheets.iter() {
-        for rule in stylesheet.rules.iter() {
-            match rule {
-                BevyCssRule::Style(style_rule) =>
-                    apply_style_rules(style_rule, &mut styles_query)
-            }
-        }
-    }
-}
-
+/// A CssContext used for node-relative style properties (e.g. `1em`)
 fn create_context(_style: &Style) -> CssContext {
     // @fixme Create a proper context, not a default
     CssContext::default()
 }
 
-fn apply_style_rules<'a>(
+/// System to manage stylesheet application to entities
+// @todo Only update styles when the style context changes
+// @todo Make the order of allied sheets deterministic (need to decided on cascading rules)
+// @todo Add support for Component matching/selectors
+fn apply_styles(
+    mut stylesheet_events: EventReader<AssetEvent<CssStylesheet>>,
+    assets: Res<Assets<CssStylesheet>>,
+    mut styles_query: Query<(&mut Style, Option<&CssId>, Option<&CssClass>)>,
+) {
+    for event in stylesheet_events.iter() {
+        match event {
+            AssetEvent::Created { handle } | AssetEvent::Modified { handle } =>
+                apply_stylesheet(assets.get(handle).unwrap(), &mut styles_query),
+            _ => ()
+        }
+    }
+}
+
+fn apply_stylesheet(
+    stylesheet: &CssStylesheet,
+    styles_query: &mut Query<(&mut Style, Option<&CssId>, Option<&CssClass>)>,
+) {
+    for rule in stylesheet.rules.iter() {
+        match rule {
+            BevyCssRule::Style(style_rule) => apply_style_rule(style_rule, styles_query)
+        }
+    }
+}
+
+fn apply_style_rule<'a>(
     style_rule: &BevyStyleRule,
     query: &mut Query<(&mut Style, Option<&CssId>, Option<&CssClass>)>
 ) {

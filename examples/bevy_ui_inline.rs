@@ -8,7 +8,7 @@ use bevy::{
     input::mouse::{MouseScrollUnit, MouseWheel},
     prelude::*,
 };
-use css::{CssContext, CssStyle};
+use bevy_prototype_css::{CssContext, CssStyle};
 
 fn main() {
     App::new()
@@ -22,6 +22,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     // ui camera
     commands.spawn_bundle(UiCameraBundle::default());
 
+    // a CssContext is needed to correctly parse relative css lengths (e.g. em)
+    // you must provide one for this framework
     let css_context = CssContext::default();
 
     // root node

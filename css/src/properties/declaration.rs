@@ -1,7 +1,7 @@
 use bevy::ui;
 use cssparser::{CowRcStr, Parser};
 use crate::{
-    CssContext,
+    context::CssContext,
     errors::{BevyCssParsingError, BevyCssParsingErrorKind},
     properties::{self, Property},
     values::{

@@ -1,7 +1,9 @@
 use bevy::{math, ui};
 use bevy::reflect::Reflect;
-use crate::CssContext;
-use crate::values::{LengthPercentage, LengthPercentageOrAuto, SidedValue};
+use crate::{
+    context::CssContext,
+    values::{LengthPercentage, LengthPercentageOrAuto, SidedValue}
+};
 
 /// Very similar to the standard library `From<T>` trait, but allows the `::from()` function to take
 /// a `CssContext` reference for the conversion.

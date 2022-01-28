@@ -1,12 +1,12 @@
 pub mod bevy_converters;
 pub mod bevy_impl;
-mod generic;
-mod length;
-mod number;
-mod parse;
-mod percentage;
-mod ratio;
-mod shorthand;
+pub mod generic;
+pub mod length;
+pub mod number;
+pub mod parse;
+pub mod percentage;
+pub mod ratio;
+pub mod shorthand;
 
 pub use parse::Parse;
 pub use length::{

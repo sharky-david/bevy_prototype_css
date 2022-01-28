@@ -1,43 +1,97 @@
 # Bevy CSS (Prototype)
 
-This project allows Bevy UI Node Styles to be defined with CSS strings, rather than the current verbose code
-definitions.  This crate is currently still being developed, and lacks significant test coverage.
+This project allows Bevy UI Node Styles to be defined with CSS strings, rather than the current verbose inline code
+definitions.  This crate is still being developed, and lacks significant test coverage.
 
 If you like this crate and would like to help make it better, please consider submitting a pull request.
 
-## Features
+## Current Features
 
-### Current Features
+### Supported components
 
-#### Supported `ui::Node` component types
+Styling/definition in CSS is supported for the following components:
 
-- `ui::Style`
+- `bevy::ui::Style`
 
-#### Code inline css
+### Styling with `.css` stylesheets and class / id components
 
-UI styles can be created inline in your code from a css string and the appropriate (static) context:
+> Example: `bevy_ui_stylesheet.rs`/`assets/styles/bevy_ui.css` (`cargo run --example bevy_ui_stylesheet`)
 
-    use bevy_prototype_css::{CssContext, CssStyle};
+The `CssPlugin` allows UI styles to be defined in a `.css` asset file (e.g. `assets/styles/ui.css`).  By loading this
+asset and tagging your styled entities with `CssId`/`CssClass`, the stylesheet styles will be applied to your nodes for
+you.
+
+#### Example
+
+`src/main.rs`:
+
+    use bevy_prototype_css::{CssClass, CssId, CssPlugin, CssStylesheet};        // Required imports
 
     fn main() {
         App::new()
             .add_plugins(DefaultPlugins)
-            .add_system(setup)
+            .add_plugin(CssPlugin)                                              // CSSPlugin does the hard work
+            .add_startup_system(setup)
+            .run()
+    }
+
+    fn setup(
+        mut commands: Commands,
+        asset_server: Res<AssetServer>,
+    ) {
+        let css_handle = asset_server.load("styles/ui.css");                    // Load the .css file
+    
+        commands
+            .spawn_bundle(NodeBundle::default())
+            .insert_bundle((
+                CssId::from("container-1"), CssClass::from("fill-width"),       // Tag the entity with your id/classes
+            ));
+    }
+
+`assets/styles/ui.css`:
+
+    #container-1 { height: 10em; }
+    .fill-width { width: 100%; }
+
+**Caveat**: Selector matching is currently very rudimentary.  Ids and classes can be combined (e.g.
+`#id.class-1.class-2`), but there is _currently_ no hierarchical matching (e.g. `#parent>.child` doesn't work).  There
+is also no pseudo-class (e.g. `:hover`), pseudo-element (e.g. `::after`), nor attribute (e.g. `[attr=value]`) matching.
+
+### Inline css in code
+
+> Example: `bevy_ui_inline.rs` (`cargo run --example bevy_ui_inline`)
+
+UI styles can be created inline in your code from a css string and the appropriate (static) context.  Use `CssStyle` to
+define your style, then call `.to_style(css_context)` to get a `bevy::ui::Style` component.
+
+`CssStyle` is **not** a component, just a container for `&str`.  You could create common `CssStyle` structs ahead of
+time, then call `.to_style` on the same `CssStyle` multiple times.
+
+`src/main.rs`:
+
+    use bevy_prototype_css::{CssContext, CssStyle};                              // Required imports
+
+    fn main() {
+        App::new()
+            .add_plugins(DefaultPlugins)
+            .add_startup_system(setup)
             .run()
     }
 
     fn setup(mut commands: Commands) {
-        let css_context = CssContext::default();
+        let css_context = CssContext::default();                                 // CssContext is required!
     
         commands.spawn_bundle(
-            style: CssStyle("width: 100%; height: 10em;").to_style(css_context),
+            style: CssStyle("width: 100%; height: 10em;")                        // Define your styles without selectors
+                .to_style(css_context),                                          // Call .to_style to get your Style
             ..Default::default(),
         );
     }
 
-### Planned
+## Planned / desired Features
 
-- Spreadsheets as assets
+- Hierarchical selector matching (e.g. `#parent>.child`)
+- Entity components as CSS tags (e.g. `Node.class { /* ... */ }`)
 - Support for the following `ui::Node` component types
   - `ui::UiColor`
   - `text::TextStyle`
@@ -48,19 +102,25 @@ UI styles can be created inline in your code from a css string and the appropria
 - `!important` keyword
 - CSS wide keywords (`initial`, `inherit`, `unset`)
 
-## Useful References
+## Compatible Bevy Versions
 
-#### Bevy
+| `bevy_prototype_css` version | Minimum `bevy` version |
+|:----------------------------:|:----------------------:|
+|             0.1              |          0.6           |
+
+## References
+
+### Bevy
 
 - `ui::Style` doc: <https://docs.rs/bevy/latest/bevy/ui/struct.Style.html>
 
-#### CSS Spec + Documentation
+### CSS Spec + Documentation
 
 - Developer reference (Mozilla): <https://developer.mozilla.org/en-US/docs/Web/CSS>
 - Values & Units Spec: <https://drafts.csswg.org/css-values/>
 - w3 Schools tutorials & reference: <https://www.w3schools.com/css>
 
-## Property Names
+### Property Names
 
 `<Bevy Type>` -> `<css-property-name>`
 
@@ -109,7 +169,7 @@ UI styles can be created inline in your code from a css string and the appropria
 
 - `Style::Border` -> `border-width`, `border-width-top`, `border-width-right`, `border-width-bottom`, `border-width-left`
 
-## Accepted Values
+### Accepted Values
 
 #### Display
 
@@ -149,7 +209,7 @@ UI styles can be created inline in your code from a css string and the appropria
 
 #### Margins
 
-- margin: [`auto` | `<length>` | `<percentage>`]{1,4} (See Shorthand below)
+- margin: [`auto` | `<length>` | `<percentage>`]{1,4} (See _Shorthand_ below)
 - margin-top: `auto` | `<length>` | `<percentage>`
 - margin-right: `auto` | `<length>` | `<percentage>`
 - margin-bottom: `auto` | `<length>` | `<percentage>`
@@ -157,7 +217,7 @@ UI styles can be created inline in your code from a css string and the appropria
 
 #### Padding
 
-- padding: [`auto` | `<length>` | `<percentage>`]{1,4} (See Shorthand below)
+- padding: [`auto` | `<length>` | `<percentage>`]{1,4} (See _Shorthand_ below)
 - padding-top: `auto` | `<length>` | `<percentage>`
 - padding-right: `auto` | `<length>` | `<percentage>`
 - padding-bottom: `auto` | `<length>` | `<percentage>`
@@ -165,15 +225,15 @@ UI styles can be created inline in your code from a css string and the appropria
 
 #### Borders
 
-- border-width: [`auto` | `<length>` | `<percentage>`]{1,4} (See Shorthand below)
+- border-width: [`auto` | `<length>` | `<percentage>`]{1,4} (See _Shorthand_ below)
 - border-width-top: `auto` | `<length>` | `<percentage>`
 - border-width-right: `auto` | `<length>` | `<percentage>`
 - border-width-bottom: `auto` | `<length>` | `<percentage>`
 - border-width-left: `auto` | `<length>` | `<percentage>`
 
-## Value Types
+### Value Types
 
-### `<number>`
+#### `<number>`
 
 - [CSS Spec](https://drafts.csswg.org/css-values/#numbers)
 - [Mozilla Web Docs](https://developer.mozilla.org/en-US/docs/Web/CSS/number)
@@ -182,7 +242,7 @@ UI styles can be created inline in your code from a css string and the appropria
 
 - Same as `<numer>`, except the value has to be `>= 0`
 
-### `<length>`
+#### `<length>`
 
 - [CSS Spec](https://drafts.csswg.org/css-values/#lengths)
 - [Mozilla Web Docs](https://developer.mozilla.org/en-US/docs/Web/CSS/length)
@@ -194,12 +254,12 @@ UI styles can be created inline in your code from a css string and the appropria
     - Font Relative: `em`, `rem`, `ex`, `ch`
     - Viewport Relative: `vw`, `vh`, `vmin`, `vmax`
 
-### `<pergentage>`
+#### `<pergentage>`
 
 - [CSS Spec](https://drafts.csswg.org/css-values/#percentages)
 - [Mozilla Web Docs](https://developer.mozilla.org/en-US/docs/Web/CSS/percentage)
 
-### `<ratio>`
+#### `<ratio>`
 
 - [CSS Spec](https://drafts.csswg.org/css-values/#ratios)
 - [Mozilla Web Docs](https://developer.mozilla.org/en-US/docs/Web/CSS/ratio)
@@ -208,7 +268,8 @@ UI styles can be created inline in your code from a css string and the appropria
 
 Allows multiple properties to be set in one declaration.
 
-#### Syntax 
+#### Syntax
+
 [`value type` | `value type` | ... ]{`min`,`max`}
 
 Accepts some number of `value type`s, at least `min`, and at most `max` times.  Separate each `value type` with a space.
@@ -230,7 +291,7 @@ values.  Each value can have the type of either `auto`, `<length>`, or `<percent
   **second** value will be used for the `-right` and `-left`.
 - If **_three_** values are given, then the **first** value will be used for the `-top`, the **second** will be used for
   the `-right` and `-left`, and the **third** will be used for the `-bottom`.
-- If all **_four_** values are given, then they will each be used `-top`, `-right`, `-bottom`, `-left` respectively.
+- If all **_four_** values are given, then they will each be used for `-top`, `-right`, `-bottom`, `-left` respectively.
 
 The following are all valid `margin` declarations:
 
@@ -243,3 +304,5 @@ The following are all valid `margin` declarations:
 ## License
 
 This crate is dual licensed under the MIT license or the Apache 2.0 license.
+
+Copies of these licenses are available in the `docs` folder.

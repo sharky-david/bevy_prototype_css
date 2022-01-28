@@ -9,7 +9,7 @@ use cssparser::{
     Parser, Token, match_ignore_ascii_case, _cssparser_internal_to_lowercase, CowRcStr
 };
 use crate::{
-    CssContext,
+    context::CssContext,
     errors::{BevyCssParsingError, BevyCssParsingErrorKind},
     values::{
         generic::{MaybeAuto, NonNegative, Numeric},

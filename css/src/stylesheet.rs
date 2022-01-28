@@ -6,7 +6,7 @@ use bevy::{
 };
 use cssparser::{Parser, ParserInput};
 use crate::{
-    CssContext,
+    context::CssContext,
     parser::{BevySheetParser, BevyPropertyListParser},
     properties::BevyPropertyDeclaration,
     rules::BevyCssRule

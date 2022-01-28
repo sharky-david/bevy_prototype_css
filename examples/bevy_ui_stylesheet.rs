@@ -8,27 +8,27 @@ use bevy::{
     input::mouse::{MouseScrollUnit, MouseWheel},
     prelude::*,
 };
-use css::{CssClass, CssId, CssPlugin, CssStylesheet};
+use bevy_prototype_css::{CssClass, CssId, CssPlugin, CssStylesheet};
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         // Adds the `Stylesheet` asset (with loader for `.css` files), and relevant systems
         .add_plugin(CssPlugin)
-        // It is let to the user to create/load css files/string
-        .add_startup_system(load_css_file)
         .add_startup_system(setup)
         .add_system(mouse_scroll)
         .run()
 }
 
-fn load_css_file(asset_server: Res<AssetServer>) {
-    let _css_handle: Handle<CssStylesheet> = asset_server.load("styles/bevy_ui.css");
-}
-
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>
+) {
     // ui camera
     commands.spawn_bundle(UiCameraBundle::default());
+
+    // load .css file
+    let _css_handle: Handle<CssStylesheet> = asset_server.load("styles/bevy_ui.css");
 
     // root node
     let background = commands
