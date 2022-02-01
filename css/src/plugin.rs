@@ -1,7 +1,7 @@
 use bevy::prelude::*;
-use smallvec::SmallVec;
 use crate::{
     context::CssContext,
+    css_tag::CssTag,
     rules::{BevyCssRule, BevyStyleRule},
     stylesheet::{CssStylesheet, CssStylesheetLoader}
 };
@@ -14,37 +14,6 @@ impl Plugin for CssPlugin {
             .add_asset::<CssStylesheet>()
             .init_asset_loader::<CssStylesheetLoader>()
             .add_system(apply_styles);
-    }
-}
-
-#[derive(Component, Debug, Clone, Default)]
-pub struct CssId(String);
-
-impl From<String> for CssId {
-    fn from(id: String) -> Self {
-        assert!(!id.contains(' '));
-        Self(id)
-    }
-}
-
-impl From<&str> for CssId {
-    fn from(id: &str) -> Self {
-        Self::from(id.to_string())
-    }
-}
-
-#[derive(Component, Debug, Clone, Default)]
-pub struct CssClass(SmallVec<[String; 1]>);
-
-impl From<&str> for CssClass {
-    fn from(classes: &str) -> Self {
-        Self(classes.split(' ').map(|s| s.to_string()).collect())
-    }
-}
-
-impl From<String> for CssClass {
-    fn from(classes: String) -> Self {
-        Self::from(classes.as_str())
     }
 }
 
@@ -61,7 +30,7 @@ fn create_context(_style: &Style) -> CssContext {
 fn apply_styles(
     mut stylesheet_events: EventReader<AssetEvent<CssStylesheet>>,
     assets: Res<Assets<CssStylesheet>>,
-    mut styles_query: Query<(&mut Style, Option<&CssId>, Option<&CssClass>)>,
+    mut styles_query: Query<(&mut Style, &CssTag)>,
 ) {
     for event in stylesheet_events.iter() {
         match event {
@@ -74,7 +43,7 @@ fn apply_styles(
 
 fn apply_stylesheet(
     stylesheet: &CssStylesheet,
-    styles_query: &mut Query<(&mut Style, Option<&CssId>, Option<&CssClass>)>,
+    styles_query: &mut Query<(&mut Style, &CssTag)>,
 ) {
     for rule in stylesheet.rules.iter() {
         match rule {
@@ -85,13 +54,11 @@ fn apply_stylesheet(
 
 fn apply_style_rule<'a>(
     style_rule: &BevyStyleRule,
-    query: &mut Query<(&mut Style, Option<&CssId>, Option<&CssClass>)>
+    query: &mut Query<(&mut Style, &CssTag)>
 ) {
-    for (mut style, css_id, css_classes) in query.iter_mut() {
+    for (mut style, CssTag { id, classes }) in query.iter_mut() {
         let context = create_context(&style);
-        let id = css_id.map(|id| &id.0);
-        let classes = css_classes.map(|cl| &cl.0);
-        if style_rule.selectors.matches(id, classes) {
+        if style_rule.selectors.matches(&id, &classes) {
             for property in style_rule.declarations.iter() {
                 property.modify_style(&context, &mut style)
             }

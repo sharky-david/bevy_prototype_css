@@ -8,7 +8,7 @@ use bevy::{
     input::mouse::{MouseScrollUnit, MouseWheel},
     prelude::*,
 };
-use bevy_prototype_css::{CssClass, CssId, CssPlugin, CssStylesheet};
+use bevy_prototype_css::{CssPlugin, CssStylesheet, CssTag};
 
 fn main() {
     App::new()
@@ -31,14 +31,12 @@ fn setup(
     let _css_handle: Handle<CssStylesheet> = asset_server.load("styles/bevy_ui.css");
 
     // root node
-    let background = commands
+    let _background = commands
         .spawn_bundle(NodeBundle {
             color: Color::NONE.into(),
             ..Default::default()
         })
-        .insert_bundle((
-            CssId::from("background-container"), CssClass::from("fill-container"),
-        ))
+        .insert(CssTag::from("#background-container.fill-container"))
         .with_children(|parent| {
             // left vertical fill (border)
             parent
@@ -46,7 +44,7 @@ fn setup(
                     color: Color::rgb(0.65, 0.65, 0.65).into(),
                     ..Default::default()
                 })
-                .insert(CssClass::from("sidebar border-2px"))
+                .insert(CssTag::new_class_str("sidebar border-2px"))
                 .with_children(|parent| {
                     // left vertical fill (content)
                     parent
@@ -54,9 +52,7 @@ fn setup(
                             color: Color::rgb(0.15, 0.15, 0.15).into(),
                             ..Default::default()
                         })
-                        .insert_bundle((
-                            CssId::from("left-bar"), CssClass::from("fill-container"),
-                        ))
+                        .insert(CssTag::from("#left-bar.fill-container"))
                         .with_children(|parent| {
                             // text
                             parent
@@ -72,7 +68,7 @@ fn setup(
                                     ),
                                     ..Default::default()
                                 })
-                                .insert(CssClass::from("margin-5px"));
+                                .insert(CssTag::new_class_str("margin-5px"));
                         });
                 });
             // right vertical fill
@@ -81,9 +77,7 @@ fn setup(
                     color: Color::rgb(0.15, 0.15, 0.15).into(),
                     ..Default::default()
                 })
-                .insert_bundle((
-                    CssId::from("right-bar"), CssClass::from("sidebar"),
-                ))
+                .insert(CssTag::from("#right-bar.sidebar"))
                 .with_children(|parent| {
                     // Title
                     parent
@@ -99,16 +93,14 @@ fn setup(
                             ),
                             ..Default::default()
                         })
-                        .insert_bundle((
-                            CssId::from("scroll-title"), CssClass::from("margin-center")
-                        ));
+                        .insert(CssTag::from("#scroll-title.margin-center"));
                     // List with hidden overflow
                     parent
                         .spawn_bundle(NodeBundle {
                             color: Color::rgb(0.10, 0.10, 0.10).into(),
                             ..Default::default()
                         })
-                        .insert(CssId::from("scroll-list"))
+                        .insert(CssTag::new_id_str("scroll-list"))
                         .with_children(|parent| {
                             // Moving panel
                             parent
@@ -116,7 +108,7 @@ fn setup(
                                     color: Color::NONE.into(),
                                     ..Default::default()
                                 })
-                                .insert(CssClass::from("scroller panel"))
+                                .insert(CssTag::new_class_str("scroller panel"))
                                 .insert(ScrollingList::default())
                                 .with_children(|parent| {
                                     // List items
@@ -135,7 +127,7 @@ fn setup(
                                                 ),
                                                 ..Default::default()
                                             })
-                                            .insert(CssClass::from("scroller item margin-center"));
+                                            .insert(CssTag::new_class_str("scroller item margin-center"));
                                     }
                                 });
                         });
@@ -146,17 +138,14 @@ fn setup(
                     color: Color::rgb(0.4, 0.4, 1.0).into(),
                     ..Default::default()
                 })
-                .insert_bundle((
-                    CssId::from("square-bottom-left"),
-                    CssClass::from("absolute square-200px border-20px"),
-                ))
+                .insert(CssTag::from("#square-bottom-left.absolute.square-200px.border-20px"))
                 .with_children(|parent| {
                     parent
                         .spawn_bundle(NodeBundle {
                             color: Color::rgb(0.8, 0.8, 1.0).into(),
                             ..Default::default()
                         })
-                        .insert(CssClass::from("fill-container"));
+                        .insert(CssTag::new_class_str("fill-container"));
                 });
             // render order test: reddest in the back, whitest in the front (flex center)
             parent
@@ -164,58 +153,40 @@ fn setup(
                     color: Color::NONE.into(),
                     ..Default::default()
                 })
-                .insert_bundle((
-                    CssId::from("order-container"),
-                    CssClass::from("fill-container absolute"),
-                ))
+                .insert(CssTag::from("#order-container.fill-container.absolute"))
                 .with_children(|parent| {
                     parent
                         .spawn_bundle(NodeBundle {
                             color: Color::rgb(1.0, 0.0, 0.0).into(),
                             ..Default::default()
                         })
-                        .insert_bundle((
-                            CssId::from("square-order-1"),
-                            CssClass::from("square-100px")
-                        ))
+                        .insert(CssTag::from("#square-order-1.square-100px"))
                         .with_children(|parent| {
                             parent
                                 .spawn_bundle(NodeBundle {
                                     color: Color::rgb(1.0, 0.3, 0.3).into(),
                                     ..Default::default()
                                 })
-                                .insert_bundle((
-                                    CssId::from("square-order-2"),
-                                    CssClass::from("absolute square-100px")
-                                ));
+                                .insert(CssTag::from("#square-order-2.absolute.square-100px"));
                             parent
                                 .spawn_bundle(NodeBundle {
                                     color: Color::rgb(1.0, 0.5, 0.5).into(),
                                     ..Default::default()
                                 })
-                                .insert_bundle((
-                                    CssId::from("square-order-3"),
-                                    CssClass::from("absolute square-100px")
-                                ));
+                                .insert(CssTag::from("#square-order-3.absolute.square-100px"));
                             parent
                                 .spawn_bundle(NodeBundle {
                                     color: Color::rgb(1.0, 0.7, 0.7).into(),
                                     ..Default::default()
                                 })
-                                .insert_bundle((
-                                    CssId::from("square-order-4"),
-                                    CssClass::from("absolute square-100px")
-                                ));
+                                .insert(CssTag::from("#square-order-4.absolute.square-100px"));
                             // alpha test
                             parent
                                 .spawn_bundle(NodeBundle {
                                     color: Color::rgba(1.0, 0.9, 0.9, 0.4).into(),
                                     ..Default::default()
                                 })
-                                .insert_bundle((
-                                    CssId::from("square-order-5"),
-                                    CssClass::from("absolute square-100px")
-                                ));
+                                .insert(CssTag::from("#square-order-5.absolute.square-100px"));
                         });
                 });
             // bevy logo (flex center)
@@ -224,10 +195,7 @@ fn setup(
                     color: Color::NONE.into(),
                     ..Default::default()
                 })
-                .insert_bundle((
-                    CssId::from("logo-container"),
-                    CssClass::from("fill-container absolute")
-                ))
+                .insert(CssTag::from("#logo-container.fill-container.absolute"))
                 .with_children(|parent| {
                     // bevy logo (image)
                     parent
@@ -235,7 +203,7 @@ fn setup(
                             image: asset_server.load("branding/bevy_logo_dark_big.png").into(),
                             ..Default::default()
                         })
-                        .insert(CssId::from("logo"));
+                        .insert(CssTag::new_id_str("logo"));
                 });
         });
 }

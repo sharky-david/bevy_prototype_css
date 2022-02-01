@@ -27,7 +27,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let css_context = CssContext::default();
 
     // root node
-    let background = commands
+    let _background = commands
         .spawn_bundle(NodeBundle {
             style: CssStyle("width: 100%; height: 100%; justify-content: space-between;")
                 .to_style(&css_context),

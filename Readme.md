@@ -1,7 +1,7 @@
 # Bevy CSS (Prototype)
 
-This project allows Bevy UI Node Styles to be defined with CSS strings, rather than the current verbose inline code
-definitions.  This crate is still being developed, and lacks significant test coverage.
+A project that allows Bevy UI Node Styles to be defined with CSS strings, rather than the current verbose inline code
+definitions.  Mozilla's excellent cssparser & selectors crates provide the core parsing functionality.
 
 If you like this crate and would like to help make it better, please consider submitting a pull request.
 
@@ -18,14 +18,14 @@ Styling/definition in CSS is supported for the following components:
 > Example: `bevy_ui_stylesheet.rs`/`assets/styles/bevy_ui.css` (`cargo run --example bevy_ui_stylesheet`)
 
 The `CssPlugin` allows UI styles to be defined in a `.css` asset file (e.g. `assets/styles/ui.css`).  By loading this
-asset and tagging your styled entities with `CssId`/`CssClass`, the stylesheet styles will be applied to your nodes for
-you.
+asset and tagging your styled entities with a `CssTag`, the stylesheet styles will be applied to your nodes for you.
+Only entities with a `CssTag` will be styled.
 
 #### Example
 
 `src/main.rs`:
 
-    use bevy_prototype_css::{CssClass, CssId, CssPlugin, CssStylesheet};        // Required imports
+    use bevy_prototype_css::{CssPlugin, CssStylesheet, CssTag};                 // Required imports
 
     fn main() {
         App::new()
@@ -39,13 +39,12 @@ you.
         mut commands: Commands,
         asset_server: Res<AssetServer>,
     ) {
-        let css_handle = asset_server.load("styles/ui.css");                    // Load the .css file
+        let sheet: Handle<CssStylesheet> = asset_server.load("styles/ui.css");  // Load the .css file
     
         commands
             .spawn_bundle(NodeBundle::default())
-            .insert_bundle((
-                CssId::from("container-1"), CssClass::from("fill-width"),       // Tag the entity with your id/classes
-            ));
+            .insert(CssTag::from("#container-1.fill-width"));                   // Tag the entity with your id/classes
+            
     }
 
 `assets/styles/ui.css`:

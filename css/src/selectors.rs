@@ -35,7 +35,7 @@ impl BevySelectorList {
         Ok(Self(selectors))
     }
 
-    pub fn matches(&self, id: Option<&String>, classes: Option<&SmallVec<[String; 1]>>) -> bool {
+    pub fn matches(&self, id: &Option<String>, classes: &SmallVec<[String; 1]>) -> bool {
         self.0.iter().any(|s| s.matches(id, classes))
     }
 }
@@ -67,7 +67,7 @@ pub struct BevyCssSelector(Selector<BevyCssSelectorKinds>);
 
 impl BevyCssSelector {
     #[inline]
-    pub fn matches(&self, id: Option<&String>, classes: Option<&SmallVec<[String; 1]>>) -> bool {
+    pub fn matches(&self, id: &Option<String>, classes: &SmallVec<[String; 1]>) -> bool {
         let mut context = MatchingContext::new(
             MatchingMode::Normal,
             None,
@@ -161,8 +161,8 @@ impl<'i> SelectorParser<'i> for BevySelectorParser {
 
 #[derive(Copy, Clone, Debug)]
 struct BevyElement<'a> {
-    id: Option<&'a String>,
-    classes: Option<&'a SmallVec<[String; 1]>>
+    id: &'a Option<String>,
+    classes: &'a SmallVec<[String; 1]>
 }
 
 impl<'a> Element for BevyElement<'a> {
@@ -265,19 +265,17 @@ impl<'a> Element for BevyElement<'a> {
 
     #[inline]
     fn has_id(&self, id: &CssString, case_sensitivity: CaseSensitivity) -> bool {
-        self.id.map_or(false, |id_str|
-            case_sensitivity.eq(id_str.as_bytes(), id.as_bytes())
-        )
+        match self.id {
+            Some(id_str) => case_sensitivity.eq(id_str.as_bytes(), id.as_bytes()),
+            None => false,
+        }
     }
 
     #[inline]
     fn has_class(&self, name: &CssString, case_sensitivity: CaseSensitivity) -> bool {
-        match self.classes {
-            Some(classes) => classes.iter().any(|class|
-                case_sensitivity.eq(class.as_bytes(), name.as_bytes())
-            ),
-            None => false
-        }
+        self.classes.iter().any(|class|
+            case_sensitivity.eq(class.as_bytes(), name.as_bytes())
+        )
     }
 
     #[inline]
