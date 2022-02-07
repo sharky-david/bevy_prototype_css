@@ -1,4 +1,7 @@
-use bevy::ui;
+use bevy::{
+    prelude::Color,
+    ui,
+};
 use cssparser::{CowRcStr, Parser};
 use crate::{
     context::CssContext,
@@ -65,6 +68,9 @@ pub enum BevyPropertyDeclaration {
     BorderWidthRight(LengthPercentageOrAuto),
     BorderWidthBottom(LengthPercentageOrAuto),
     BorderWidthLeft(LengthPercentageOrAuto),
+
+    // Color
+    Color(Color)
 }
 
 // Convenience type
@@ -128,6 +134,17 @@ impl BevyPropertyDeclaration {
             Self::BorderWidthRight(border_width_right) => style.border.right = border_width_right.contextual_into(context),
             Self::BorderWidthBottom(border_width_bottom) => style.border.bottom = border_width_bottom.contextual_into(context),
             Self::BorderWidthLeft(border_width_left) => style.border.left = border_width_left.contextual_into(context),
+
+            _ => (),
+        }
+    }
+
+    pub(crate) fn modify_color(&self, ui_color: &mut ui::UiColor) {
+        // Color
+        match *self {
+            Self::Color(color) => ui_color.0 = color,
+
+            _ => (),
         }
     }
 
@@ -185,6 +202,9 @@ impl BevyPropertyDeclaration {
             "border-width-right"      => properties::BorderWidthRight::parse_declaration,
             "border-width-bottom"     => properties::BorderWidthBottom::parse_declaration,
             "border-width-left"       => properties::BorderWidthLeft::parse_declaration,
+
+            // Color
+            "color"             => properties::Color::parse_declaration,
 
             _ => return None
         })

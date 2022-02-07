@@ -10,16 +10,17 @@
     width: 100%;
     height: 50%;
     overflow: hidden;
+    color: rgb(26, 26, 26);
 }
 
 #square-bottom-left { left: 210px; bottom: 10px; }
 
 #order-container { align-items: center; justify-content: center; }
-#square-order-1 {  }
-#square-order-2 { left: 20px; bottom: 20px; }
-#square-order-3 { left: 40px; bottom: 40px; }
-#square-order-4 { left: 60px; bottom: 60px; }
-#square-order-5 { left: 80px; bottom: 80px; }
+#square-order-1 { color: red; }
+#square-order-2 { left: 20px; bottom: 20px; color: rgb(100%, 30%, 30%); }
+#square-order-3 { left: 40px; bottom: 40px; color: rgb(100%, 50%, 50%); }
+#square-order-4 { left: 60px; bottom: 60px; color: rgb(100%, 70%, 70%); }
+#square-order-5 { left: 80px; bottom: 80px; color: rgba(100%, 90%, 90%, 0.4); }
 
 #logo-container { justify-content: center; align-items: flex-end; }
 #logo { width: 500px; height: auto; }
@@ -38,3 +39,9 @@
 .absolute { position: absolute; }
 .square-200px { width: 200px; height: 200px; }
 .square-100px { width: 100px; height: 100px; }
+
+.no-color { color: rgba(0, 0, 0, 0); }
+.light-grey { color: rgb(65%, 65%, 65%); }
+.dark-grey { color: rgb(15%, 15%, 15%); }
+.dark-blue { color: rgb(40%, 40%, 100%); }
+.light-blue { color: rgb(80%, 80%, 100%); }

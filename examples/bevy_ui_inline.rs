@@ -80,6 +80,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .with_children(|parent| {
                     // Title
                     parent.spawn_bundle(TextBundle {
+                        // @fixme should be centered, but isn't.  Maybe requires width: undefined?
                         style: CssStyle("height: 25px; margin-left: auto; margin-right: auto;")
                             .to_style(&css_context),
                         text: Text::with_section(
@@ -96,6 +97,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     // List with hidden overflow
                     parent
                         .spawn_bundle(NodeBundle {
+                            // @fixme should be centered, but isn't.  Maybe requires width: undefined?
                             style: CssStyle("width: 100%; height: 50%; flex-direction: column-reverse; align-self: center; overflow: hidden;")
                                 .to_style(&css_context),
                             color: Color::rgb(0.10, 0.10, 0.10).into(),

@@ -1,4 +1,7 @@
-use bevy::{ui};
+use bevy::{
+    render::color,
+    ui,
+};
 use cssparser::Parser;
 use crate::{
     errors::BevyCssParsingError,
@@ -88,3 +91,6 @@ property_def!(BorderWidthTop, LengthPercentageOrAuto, BevyPropertyDeclaration::B
 property_def!(BorderWidthRight, LengthPercentageOrAuto, BevyPropertyDeclaration::BorderWidthRight);
 property_def!(BorderWidthBottom, LengthPercentageOrAuto, BevyPropertyDeclaration::BorderWidthBottom);
 property_def!(BorderWidthLeft, LengthPercentageOrAuto, BevyPropertyDeclaration::BorderWidthLeft);
+
+// Color
+property_def!(Color, color::Color, BevyPropertyDeclaration::Color);

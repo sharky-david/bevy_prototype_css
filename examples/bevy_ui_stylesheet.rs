@@ -32,27 +32,18 @@ fn setup(
 
     // root node
     let _background = commands
-        .spawn_bundle(NodeBundle {
-            color: Color::NONE.into(),
-            ..Default::default()
-        })
-        .insert(CssTag::from("#background-container.fill-container"))
+        .spawn_bundle(NodeBundle::default())
+        .insert(CssTag::from("#background-container.fill-container.no-color"))
         .with_children(|parent| {
             // left vertical fill (border)
             parent
-                .spawn_bundle(NodeBundle {
-                    color: Color::rgb(0.65, 0.65, 0.65).into(),
-                    ..Default::default()
-                })
-                .insert(CssTag::new_class_str("sidebar border-2px"))
+                .spawn_bundle(NodeBundle::default())
+                .insert(CssTag::new_class_str("sidebar border-2px light-grey"))
                 .with_children(|parent| {
                     // left vertical fill (content)
                     parent
-                        .spawn_bundle(NodeBundle {
-                            color: Color::rgb(0.15, 0.15, 0.15).into(),
-                            ..Default::default()
-                        })
-                        .insert(CssTag::from("#left-bar.fill-container"))
+                        .spawn_bundle(NodeBundle::default())
+                        .insert(CssTag::from("#left-bar.fill-container.dark-grey"))
                         .with_children(|parent| {
                             // text
                             parent
@@ -73,11 +64,8 @@ fn setup(
                 });
             // right vertical fill
             parent
-                .spawn_bundle(NodeBundle {
-                    color: Color::rgb(0.15, 0.15, 0.15).into(),
-                    ..Default::default()
-                })
-                .insert(CssTag::from("#right-bar.sidebar"))
+                .spawn_bundle(NodeBundle::default())
+                .insert(CssTag::from("#right-bar.sidebar.dark-grey"))
                 .with_children(|parent| {
                     // Title
                     parent
@@ -96,19 +84,13 @@ fn setup(
                         .insert(CssTag::from("#scroll-title.margin-center"));
                     // List with hidden overflow
                     parent
-                        .spawn_bundle(NodeBundle {
-                            color: Color::rgb(0.10, 0.10, 0.10).into(),
-                            ..Default::default()
-                        })
+                        .spawn_bundle(NodeBundle::default())
                         .insert(CssTag::new_id_str("scroll-list"))
                         .with_children(|parent| {
                             // Moving panel
                             parent
-                                .spawn_bundle(NodeBundle {
-                                    color: Color::NONE.into(),
-                                    ..Default::default()
-                                })
-                                .insert(CssTag::new_class_str("scroller panel"))
+                                .spawn_bundle(NodeBundle::default())
+                                .insert(CssTag::new_class_str("scroller panel no-color"))
                                 .insert(ScrollingList::default())
                                 .with_children(|parent| {
                                     // List items
@@ -134,68 +116,47 @@ fn setup(
                 });
             // absolute positioning
             parent
-                .spawn_bundle(NodeBundle {
-                    color: Color::rgb(0.4, 0.4, 1.0).into(),
-                    ..Default::default()
-                })
-                .insert(CssTag::from("#square-bottom-left.absolute.square-200px.border-20px"))
+                .spawn_bundle(NodeBundle::default())
+                .insert(CssTag::from(
+                    "#square-bottom-left.absolute.square-200px.border-20px.dark-blue"
+                ))
                 .with_children(|parent| {
                     parent
-                        .spawn_bundle(NodeBundle {
-                            color: Color::rgb(0.8, 0.8, 1.0).into(),
-                            ..Default::default()
-                        })
-                        .insert(CssTag::new_class_str("fill-container"));
+                        .spawn_bundle(NodeBundle::default())
+                        .insert(CssTag::new_class_str("fill-container light-blue"));
                 });
             // render order test: reddest in the back, whitest in the front (flex center)
             parent
-                .spawn_bundle(NodeBundle {
-                    color: Color::NONE.into(),
-                    ..Default::default()
-                })
-                .insert(CssTag::from("#order-container.fill-container.absolute"))
+                .spawn_bundle(NodeBundle::default())
+                .insert(CssTag::from(
+                    "#order-container.fill-container.absolute.no-color"
+                ))
                 .with_children(|parent| {
                     parent
-                        .spawn_bundle(NodeBundle {
-                            color: Color::rgb(1.0, 0.0, 0.0).into(),
-                            ..Default::default()
-                        })
+                        .spawn_bundle(NodeBundle::default())
                         .insert(CssTag::from("#square-order-1.square-100px"))
                         .with_children(|parent| {
                             parent
-                                .spawn_bundle(NodeBundle {
-                                    color: Color::rgb(1.0, 0.3, 0.3).into(),
-                                    ..Default::default()
-                                })
+                                .spawn_bundle(NodeBundle::default())
                                 .insert(CssTag::from("#square-order-2.absolute.square-100px"));
                             parent
-                                .spawn_bundle(NodeBundle {
-                                    color: Color::rgb(1.0, 0.5, 0.5).into(),
-                                    ..Default::default()
-                                })
+                                .spawn_bundle(NodeBundle::default())
                                 .insert(CssTag::from("#square-order-3.absolute.square-100px"));
                             parent
-                                .spawn_bundle(NodeBundle {
-                                    color: Color::rgb(1.0, 0.7, 0.7).into(),
-                                    ..Default::default()
-                                })
+                                .spawn_bundle(NodeBundle::default())
                                 .insert(CssTag::from("#square-order-4.absolute.square-100px"));
                             // alpha test
                             parent
-                                .spawn_bundle(NodeBundle {
-                                    color: Color::rgba(1.0, 0.9, 0.9, 0.4).into(),
-                                    ..Default::default()
-                                })
+                                .spawn_bundle(NodeBundle::default())
                                 .insert(CssTag::from("#square-order-5.absolute.square-100px"));
                         });
                 });
             // bevy logo (flex center)
             parent
-                .spawn_bundle(NodeBundle {
-                    color: Color::NONE.into(),
-                    ..Default::default()
-                })
-                .insert(CssTag::from("#logo-container.fill-container.absolute"))
+                .spawn_bundle(NodeBundle::default())
+                .insert(CssTag::from(
+                    "#logo-container.fill-container.absolute.no-color"
+                ))
                 .with_children(|parent| {
                     // bevy logo (image)
                     parent

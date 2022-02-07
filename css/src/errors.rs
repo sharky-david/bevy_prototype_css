@@ -93,9 +93,11 @@ pub enum BevyCssParsingErrorKind<'i> {
     UnknownProperty(CowRcStr<'i>),
     /// A number (other than `0`) was given without a dimension (e.g. `px`) where a dimension is expected
     MissingDimension(Token<'i>),
+    /// The keyword supplied is not supported by this parsing framework
+    InvalidKeyword(CowRcStr<'i>),
     /// A value was given that is invalid in its context (but is still syntactically correct)
     InvalidValue(CowRcStr<'i>, Option<Token<'i>>),
-    /// A function was used where it is not (currently) supported by `this` parsing framework
+    /// A function was used where it is not supported by this parsing framework
     FunctionNotSupported(CowRcStr<'i>),
     /// An unspecified or undefined error occurred.  Usually signifies low level parsing errors.
     UnspecifiedError,

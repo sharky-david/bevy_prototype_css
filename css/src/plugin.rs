@@ -30,7 +30,7 @@ fn create_context(_style: &Style) -> CssContext {
 fn apply_styles(
     mut stylesheet_events: EventReader<AssetEvent<CssStylesheet>>,
     assets: Res<Assets<CssStylesheet>>,
-    mut styles_query: Query<(&mut Style, &CssTag)>,
+    mut styles_query: Query<(&CssTag, Option<&mut Style>, Option<&mut UiColor>)>,
 ) {
     for event in stylesheet_events.iter() {
         match event {
@@ -43,7 +43,7 @@ fn apply_styles(
 
 fn apply_stylesheet(
     stylesheet: &CssStylesheet,
-    styles_query: &mut Query<(&mut Style, &CssTag)>,
+    styles_query: &mut Query<(&CssTag, Option<&mut Style>, Option<&mut UiColor>)>,
 ) {
     for rule in stylesheet.rules.iter() {
         match rule {
@@ -52,15 +52,17 @@ fn apply_stylesheet(
     }
 }
 
-fn apply_style_rule<'a>(
+fn apply_style_rule(
     style_rule: &BevyStyleRule,
-    query: &mut Query<(&mut Style, &CssTag)>
+    query: &mut Query<(&CssTag, Option<&mut Style>, Option<&mut UiColor>)>
 ) {
-    for (mut style, CssTag { id, classes }) in query.iter_mut() {
-        let context = create_context(&style);
+    for (tag, mut style_opt, mut color_opt) in query.iter_mut() {
+        let CssTag { id, classes } = tag;
+        let context = CssContext::default();
         if style_rule.selectors.matches(&id, &classes) {
             for property in style_rule.declarations.iter() {
-                property.modify_style(&context, &mut style)
+                if let Some(mut style) = style_opt.as_mut() { property.modify_style(&context, &mut style) }
+                if let Some(mut color) = color_opt.as_mut() { property.modify_color(&mut color) }
             }
         }
     }

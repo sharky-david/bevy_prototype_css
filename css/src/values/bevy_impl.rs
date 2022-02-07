@@ -1,4 +1,7 @@
-use bevy::ui;
+use bevy::{
+    prelude::Color,
+    ui
+};
 use cssparser::{
     Parser,
     match_ignore_ascii_case, _cssparser_internal_to_lowercase,
@@ -164,5 +167,24 @@ impl Parse for ui::Overflow {
                 BevyCssParsingErrorKind::InvalidValue(ident.clone(), None)
             ))
         })
+    }
+}
+
+impl Parse for Color {
+    fn parse<'i, 't>(input: &mut Parser<'i, 't>) -> Result<Self, BevyCssParsingError<'i>> {
+        let start = input.current_source_location();
+        match cssparser::Color::parse(input)? {
+            cssparser::Color::CurrentColor => Err(start.new_custom_error(
+                BevyCssParsingErrorKind::InvalidKeyword("currentcolor".into())
+            )),
+            cssparser::Color::RGBA(rgba) => Ok(
+                Color::rgba(
+                    rgba.red_f32(),
+                    rgba.green_f32(),
+                    rgba.blue_f32(),
+                    rgba.alpha_f32()
+                )
+            ),
+        }
     }
 }

@@ -12,6 +12,7 @@ If you like this crate and would like to help make it better, please consider su
 Styling/definition in CSS is supported for the following components:
 
 - `bevy::ui::Style`
+- `bevy::ui::UiColor`
 
 ### Styling with `.css` stylesheets and class / id components
 
@@ -49,7 +50,7 @@ Only entities with a `CssTag` will be styled.
 
 `assets/styles/ui.css`:
 
-    #container-1 { height: 10em; }
+    #container-1 { height: 10em; color: blue; }
     .fill-width { width: 100%; }
 
 **Caveat**: Selector matching is currently very rudimentary.  Ids and classes can be combined (e.g.
@@ -89,10 +90,10 @@ time, then call `.to_style` on the same `CssStyle` multiple times.
 
 ## Planned / desired Features
 
+- Proper & full testing
 - Hierarchical selector matching (e.g. `#parent>.child`)
 - Entity components as CSS tags (e.g. `Node.class { /* ... */ }`)
 - Support for the following `ui::Node` component types
-  - `ui::UiColor`
   - `text::TextStyle`
   - `ui::UiImage`
 - `@font-face` definitions for font asset loading
@@ -168,6 +169,10 @@ time, then call `.to_style` on the same `CssStyle` multiple times.
 
 - `Style::Border` -> `border-width`, `border-width-top`, `border-width-right`, `border-width-bottom`, `border-width-left`
 
+#### Color
+
+- `UiColor` -> `color`
+
 ### Accepted Values
 
 #### Display
@@ -230,6 +235,11 @@ time, then call `.to_style` on the same `CssStyle` multiple times.
 - border-width-bottom: `auto` | `<length>` | `<percentage>`
 - border-width-left: `auto` | `<length>` | `<percentage>`
 
+#### Color
+
+- color: `none` | `transparent` | `<rgb()>` | `<rgba()>` | `<hsl()>` | `<hsla()>` | `<hex-color>` | `<named-color>`
+(See _Colors_ below)
+
 ### Value Types
 
 #### `<number>`
@@ -249,9 +259,9 @@ time, then call `.to_style` on the same `CssStyle` multiple times.
   - See also: <https://drafts.csswg.org/css-values/#reference-pixel>
 - Not all dimensions in the CSS spec are accepted by this parser.
 - The following dimensions are accepted:
-    - Absolute: `px`, `cm`, `mm`, `Q`, `in`, `pc`, `pt`
-    - Font Relative: `em`, `rem`, `ex`, `ch`
-    - Viewport Relative: `vw`, `vh`, `vmin`, `vmax`
+  - Absolute: `px`, `cm`, `mm`, `Q`, `in`, `pc`, `pt`
+  - Font Relative: `em`, `rem`, `ex`, `ch`
+  - Viewport Relative: `vw`, `vh`, `vmin`, `vmax`
 
 #### `<pergentage>`
 
@@ -262,6 +272,12 @@ time, then call `.to_style` on the same `CssStyle` multiple times.
 
 - [CSS Spec](https://drafts.csswg.org/css-values/#ratios)
 - [Mozilla Web Docs](https://developer.mozilla.org/en-US/docs/Web/CSS/ratio)
+
+#### `<angle>`
+
+- [CSS Spec](https://drafts.csswg.org/css-values/#angles)
+- [Mozilla Web Docs](https://developer.mozilla.org/en-US/docs/Web/CSS/angle)
+- Possible angle units are `deg`, `grad`, `rad`, or `turn`
 
 ### Shorthand
 
@@ -298,7 +314,59 @@ The following are all valid `margin` declarations:
 > margin: 10px;  
 > margin: 2% 1em;  
 > margin: 20mm auto 0.3%;  
-> margin: 1px 0.5% auto auto;  
+> margin: 1px 0.5% auto auto;
+
+#### Colors
+
+- [CSS Spec](https://www.w3.org/TR/css-color-4/#color-type)
+- [Mozilla Web Docs](https://developer.mozilla.org/en-US/docs/Web/CSS/color)
+- The `none` keyword has been added to line up with Bevy's `Color::None` variant
+  - `none` is equivalent to CSS `transparent`, which is also available
+- The `currentcolor` CSS keyword will be ignored
+- The `hwb()` color function is not supported
+- Color definitions are quite versatile, and can be a bit complicated.  The CSS docs help a lot.
+
+#### `<rgb()>` & `<rgba()>`
+
+- Format is: 'rgb([`<number>` | `<percentage>`]{3} [, `<number>` | `<percentage>`]?)'
+- Both versions of this function accept the same arguments, despite the names
+- The first 3 values are (in order) red, green, and blue
+  - If these are given as a `<number>`, they must be in the range `0 ... 255`
+- The 4th value is for alpha, and is optional
+  - If a `<number>` is given, it must be in the range `0.0 ... 1.0`
+- See also: [W3 Schools](https://www.w3schools.com/csSref/func_rgba.asp)
+
+#### `<hsl()>` & `<hsla()>`
+
+- Format is: 'hsl([`<number>` | `<angle>`], `<percentage>`, `<percentage>` [, `<number>` | `<percentage>`]?)'
+- Both versions of this function accept the same arguments, despite the names
+- The first value (`<number>` | `<angle>`) is hue, representing the color/hue angle.
+  - If no unit is given, `deg` is assumed.  i.e. the number must be in the range `0 ... 360`
+- The second value is saturation
+- The third value is lightness
+- The 4th value is for alpha, and is optional
+  - If a `<number>` is given, it must be in the range `0.0 ... 1.0`
+- See also: [W3 Schools](https://www.w3schools.com/csSref/func_hsla.asp)
+
+#### `<hex-color>`
+
+- Format is: `#<red><green><blue>` (i.e. `#RRGGBB` | `#RGB`)
+- Each of `<red>`, `<green>`, and `<blue>` is a 2 digit hexadecimal integers (between `00 ... FF`)
+  - `00` is none of the respective color, while `FF` is full intensity for the respective color
+- As a shorthand, each color can be specified with only 1 digit.
+  - In this case the digit is repeated for the color.  Eg: `#fff` -> `#ffffff` & `#abc` -> `#aabbcc`
+  - If using shorthand, all 3 colors must use only 1 digit
+- Case-insensitive
+- [CSS Spec](https://www.w3.org/TR/css-color-4/#typedef-hex-color)
+- [W3 Schools HEX Color Helper](https://www.w3schools.com/colors/colors_hexadecimal.asp)
+
+#### `<named-color>`
+
+- Use the links below for a full list of the available named colors
+  - In particular, I recommend reading the 'gotcha' note in the Mozilla Web Docs
+- Keep in mind that some colors may look different on different monitors/color profiles
+- [CSS Spec](https://www.w3.org/TR/css-color-4/#typedef-named-color)
+- [Mozilla Web Docs](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#color_keywords)
 
 ## License
 
