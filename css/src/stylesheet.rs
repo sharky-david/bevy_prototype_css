@@ -3,7 +3,9 @@ use bevy::{
     prelude::Style,
     reflect::TypeUuid,
     utils:: BoxedFuture,
+    ui::UiColor,
 };
+use bevy::prelude::Color;
 use cssparser::{Parser, ParserInput};
 use crate::{
     context::CssContext,
@@ -30,6 +32,15 @@ impl<'i> CssStyle<'i> {
             property.modify_style(context, &mut style)
         }
         style
+    }
+
+    pub fn to_ui_color(&self) -> UiColor {
+        let mut color = UiColor::default();
+        let properties = self.parse_inline();
+        for property in properties.iter() {
+            property.modify_color(&mut color)
+        }
+        color
     }
 }
 

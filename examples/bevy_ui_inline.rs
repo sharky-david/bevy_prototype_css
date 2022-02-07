@@ -31,7 +31,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         .spawn_bundle(NodeBundle {
             style: CssStyle("width: 100%; height: 100%; justify-content: space-between;")
                 .to_style(&css_context),
-            color: Color::NONE.into(),
+            color: CssStyle("color: transparent;").to_ui_color(),
             ..Default::default()
         })
         .with_children(|parent| {
@@ -40,7 +40,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .spawn_bundle(NodeBundle {
                     style: CssStyle("width: 200px; height: 100%; border-width: 2px;")
                         .to_style(&css_context),
-                    color: Color::rgb(0.65, 0.65, 0.65).into(),
+                    color: CssStyle("color: rgb(65%, 65%, 65%);").to_ui_color(),
                     ..Default::default()
                 })
                 .with_children(|parent| {
@@ -49,7 +49,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                         .spawn_bundle(NodeBundle {
                             style: CssStyle("width: 100%; height: 100%; align-items: flex-end;")
                                 .to_style(&css_context),
-                            color: Color::rgb(0.15, 0.15, 0.15).into(),
+                            color: CssStyle("color: rgb(15%, 15%, 15%);").to_ui_color(),
                             ..Default::default()
                         })
                         .with_children(|parent| {
@@ -74,7 +74,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .spawn_bundle(NodeBundle {
                     style: CssStyle("width: 200px; height: 100%; flex-direction: column-reverse; justify-content: center;")
                         .to_style(&css_context),
-                    color: Color::rgb(0.15, 0.15, 0.15).into(),
+                    color: CssStyle("color: rgb(15%, 15%, 15%);").to_ui_color(),
                     ..Default::default()
                 })
                 .with_children(|parent| {
@@ -100,7 +100,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                             // @fixme should be centered, but isn't.  Maybe requires width: undefined?
                             style: CssStyle("width: 100%; height: 50%; flex-direction: column-reverse; align-self: center; overflow: hidden;")
                                 .to_style(&css_context),
-                            color: Color::rgb(0.10, 0.10, 0.10).into(),
+                            color: CssStyle("color: rgb(10%, 10%, 10%);").to_ui_color(),
                             ..Default::default()
                         })
                         .with_children(|parent| {
@@ -110,7 +110,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                                     // @fixme `Style` defines `size`, `min_size`, and `max_size` with `Val::Auto`, not `Val::Undefined`
                                     style: CssStyle("flex-direction: column-reverse; flex-grow: 1;")
                                         .to_style(&css_context),
-                                    color: Color::NONE.into(),
+                                    color: CssStyle("color: transparent;").to_ui_color(),
                                     ..Default::default()
                                 })
                                 .insert(ScrollingList::default())
@@ -141,13 +141,13 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .spawn_bundle(NodeBundle {
                     style: CssStyle("width: 200px; height: 200px; position: absolute; left: 210px; bottom: 10px; border-width: 20px;")
                         .to_style(&css_context),
-                    color: Color::rgb(0.4, 0.4, 1.0).into(),
+                    color: CssStyle("color: rgb(40%, 40%, 100%);").to_ui_color(),
                     ..Default::default()
                 })
                 .with_children(|parent| {
                     parent.spawn_bundle(NodeBundle {
                         style: CssStyle("width: 100%; height: 100%;").to_style(&css_context),
-                        color: Color::rgb(0.8, 0.8, 1.0).into(),
+                        color: CssStyle("color: rgb(80%, 80%, 100%);").to_ui_color(),
                         ..Default::default()
                     });
                 });
@@ -156,40 +156,40 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .spawn_bundle(NodeBundle {
                     style: CssStyle("width: 100%; height: 100%; position: absolute; align-items: center; justify-content: center;")
                         .to_style(&css_context),
-                    color: Color::NONE.into(),
+                    color: CssStyle("color: transparent;").to_ui_color(),
                     ..Default::default()
                 })
                 .with_children(|parent| {
                     parent
                         .spawn_bundle(NodeBundle {
                             style: CssStyle("width: 100px; height: 100px;").to_style(&css_context),
-                            color: Color::rgb(1.0, 0.0, 0.0).into(),
+                            color: CssStyle("color: red;").to_ui_color(),
                             ..Default::default()
                         })
                         .with_children(|parent| {
                             parent.spawn_bundle(NodeBundle {
                                 style: CssStyle("width: 100px; height: 100px; position: absolute; left: 20px; bottom: 20px;")
                                     .to_style(&css_context),
-                                color: Color::rgb(1.0, 0.3, 0.3).into(),
+                                color: CssStyle("color: rgb(100%, 30%, 30%);").to_ui_color(),
                                 ..Default::default()
                             });
                             parent.spawn_bundle(NodeBundle {
                                 style: CssStyle("width: 100px; height: 100px; position: absolute; left: 40px; bottom: 40px;")
                                     .to_style(&css_context),
-                                color: Color::rgb(1.0, 0.5, 0.5).into(),
+                                color: CssStyle("color: rgb(100%, 50%, 50%);").to_ui_color(),
                                 ..Default::default()
                             });
                             parent.spawn_bundle(NodeBundle {
                                 style: CssStyle("width: 100px; height: 100px; position: absolute; left: 60px; bottom: 60px;")
                                     .to_style(&css_context),
-                                color: Color::rgb(1.0, 0.7, 0.7).into(),
+                                color: CssStyle("color: rgb(100%, 70%, 70%);").to_ui_color(),
                                 ..Default::default()
                             });
                             // alpha test
                             parent.spawn_bundle(NodeBundle {
                                 style: CssStyle("width: 100px; height: 100px; position: absolute; left: 80px; bottom: 80px;")
                                     .to_style(&css_context),
-                                color: Color::rgba(1.0, 0.9, 0.9, 0.4).into(),
+                                color: CssStyle("color: rgba(100%, 90%, 90%, 0.4);").to_ui_color(),
                                 ..Default::default()
                             });
                         });
@@ -199,7 +199,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 .spawn_bundle(NodeBundle {
                     style: CssStyle("width: 100%; height: 100%; position: absolute; justify-content: center; align-items: flex-end")
                         .to_style(&css_context),
-                    color: Color::NONE.into(),
+                    color: CssStyle("color: transparent;").to_ui_color(),
                     ..Default::default()
                 })
                 .with_children(|parent| {

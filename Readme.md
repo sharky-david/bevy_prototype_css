@@ -62,7 +62,8 @@ is also no pseudo-class (e.g. `:hover`), pseudo-element (e.g. `::after`), nor at
 > Example: `bevy_ui_inline.rs` (`cargo run --example bevy_ui_inline`)
 
 UI styles can be created inline in your code from a css string and the appropriate (static) context.  Use `CssStyle` to
-define your style, then call `.to_style(css_context)` to get a `bevy::ui::Style` component.
+define your style, then call `.to_style(css_context)` to get a `bevy::ui::Style` component, or `.to_ui_color()` to get
+a `bevy::ui::UiColor` component.
 
 `CssStyle` is **not** a component, just a container for `&str`.  You could create common `CssStyle` structs ahead of
 time, then call `.to_style` on the same `CssStyle` multiple times.
@@ -81,22 +82,23 @@ time, then call `.to_style` on the same `CssStyle` multiple times.
     fn setup(mut commands: Commands) {
         let css_context = CssContext::default();                                 // CssContext is required!
     
-        commands.spawn_bundle(
+        commands.spawn_bundle(NodeBundle {
             style: CssStyle("width: 100%; height: 10em;")                        // Define your styles without selectors
                 .to_style(css_context),                                          // Call .to_style to get your Style
+            color: CssStyle("color: red;").to_ui_color(),                        // Works for colors with .to_ui_color()
             ..Default::default(),
-        );
+        });
     }
 
-## Planned / desired Features
+## Possible Future Features
 
 - Proper & full testing
 - Hierarchical selector matching (e.g. `#parent>.child`)
-- Entity components as CSS tags (e.g. `Node.class { /* ... */ }`)
+- Entity components as CSS tags (e.g. `Node.class { /* ... */ }` in your stylesheet)
+- `@font-face` definitions for font asset loading
 - Support for the following `ui::Node` component types
   - `text::TextStyle`
   - `ui::UiImage`
-- `@font-face` definitions for font asset loading
 - `calc()` and other css functions
 - Full set of CSS spec `<length>` dimensions
 - `!important` keyword
