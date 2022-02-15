@@ -14,11 +14,6 @@ pub struct SidedValue<T> {
 
 impl<T: Clone + Copy> SidedValue<T> {
     #[inline]
-    fn new(top: T, right: T, bottom: T, left: T) -> Self {
-        Self { top, right, bottom, left, }
-    }
-
-    #[inline]
     fn new_4(top: T, right: T, bottom: T, left: T) -> Self {
         Self { top, right, bottom, left, }
     }

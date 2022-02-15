@@ -5,7 +5,6 @@ use bevy::{
     utils:: BoxedFuture,
     ui::UiColor,
 };
-use bevy::prelude::Color;
 use cssparser::{Parser, ParserInput};
 use crate::{
     context::CssContext,

@@ -9,13 +9,12 @@ keywords = ["bevy", "ui", "gui"]
 readme = "Readme.md"
 license = "MIT OR Apache-2.0"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[workspace]
-members = ["css"]
-
 [dependencies]
-css = { path = "css" }
+bevy = "0.6.0"
+anyhow = "1.0.4"
+cssparser = "0.28.1"
+selectors = "0.23.0"
+smallvec = "1.8.0"
 
 [dev-dependencies]
 bevy = "0.6.0"

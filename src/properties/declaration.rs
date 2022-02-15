@@ -222,3 +222,13 @@ impl BevyPropertyDeclaration {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn testtest() {
+        assert_eq!(1+1, 3);
+    }
+}

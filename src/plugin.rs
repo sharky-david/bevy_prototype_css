@@ -17,12 +17,6 @@ impl Plugin for CssPlugin {
     }
 }
 
-/// A CssContext used for node-relative style properties (e.g. `1em`)
-fn create_context(_style: &Style) -> CssContext {
-    // @fixme Create a proper context, not a default
-    CssContext::default()
-}
-
 /// System to manage stylesheet application to entities
 // @todo Only update styles when the style context changes
 // @todo Make the order of allied sheets deterministic (need to decided on cascading rules)
@@ -58,6 +52,7 @@ fn apply_style_rule(
 ) {
     for (tag, mut style_opt, mut color_opt) in query.iter_mut() {
         let CssTag { id, classes } = tag;
+        // @fixme Create a proper context, not a default
         let context = CssContext::default();
         if style_rule.selectors.matches(&id, &classes) {
             for property in style_rule.declarations.iter() {
