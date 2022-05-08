@@ -173,6 +173,12 @@ impl Parse for ui::Overflow {
 impl Parse for Color {
     fn parse<'i, 't>(input: &mut Parser<'i, 't>) -> Result<Self, BevyCssParsingError<'i>> {
         let start = input.current_source_location();
+        let none_keyword = input.try_parse(|i| {
+            i.expect_ident_matching("none")
+        });
+        if none_keyword.is_ok() {
+            return Ok(Color::NONE)
+        }
         match cssparser::Color::parse(input)? {
             cssparser::Color::CurrentColor => Err(start.new_custom_error(
                 BevyCssParsingErrorKind::InvalidKeyword("currentcolor".into())

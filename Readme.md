@@ -1,9 +1,9 @@
 # Bevy CSS (Prototype)
 
-A project that allows Bevy UI Node Styles to be defined with CSS strings, rather than the current verbose inline code
+A project that allows Bevy UI Node Styles to be defined with CSS strings, rather than the current inline code
 definitions.  Mozilla's excellent cssparser & selectors crates provide the core parsing functionality.
 
-If you like this crate and would like to help make it better, please consider submitting a pull request.
+If you like this project and would like to help make it better, please consider submitting a pull request.
 
 ## Current Features
 
@@ -327,6 +327,7 @@ The following are all valid `margin` declarations:
 - The `currentcolor` CSS keyword will be ignored
 - The `hwb()` color function is not supported
 - Color definitions are quite versatile, and can be a bit complicated.  The CSS docs help a lot.
+- A small 'gotcha' is that all colors defined with CSS will be an instance of bevy Color::Rgba
 
 #### `<rgb()>` & `<rgba()>`
 
@@ -364,6 +365,7 @@ The following are all valid `margin` declarations:
 
 #### `<named-color>`
 
+- These are the CSS named colors, and may not be equivalent to the bevy color consts
 - Use the links below for a full list of the available named colors
   - In particular, I recommend reading the 'gotcha' note in the Mozilla Web Docs
 - Keep in mind that some colors may look different on different monitors/color profiles

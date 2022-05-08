@@ -93,6 +93,7 @@ impl<T: Clone + Copy> MaybeAuto<T> {
 }
 
 impl<T: Numeric> Numeric for MaybeAuto<T> {
+
     #[inline]
     fn zero() -> Self {
         Self::NotAuto(<T as Numeric>::zero())

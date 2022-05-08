@@ -87,3 +87,38 @@ impl AssetLoader for CssStylesheetLoader {
         &["css"]
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use bevy::{
+        ui,
+        prelude::{
+            Size, Color,
+        },
+    };
+    use crate::CssContext;
+
+    #[test]
+    fn test_css_style_style() {
+        let context = CssContext::default();
+        let style = CssStyle("width: 100%; height: 100px; justify-content: space-between;");
+        let res = ui::Style {
+            size: Size {
+                width: ui::Val::Percent(100.0),
+                height: ui::Val::Px(100.0)
+            },
+            justify_content: ui::JustifyContent::SpaceBetween,
+            ..Default::default()
+        };
+        assert_eq!(style.to_style(&context), res)
+    }
+
+    #[test]
+    fn test_css_style_color() {
+        let style = CssStyle("color: rgb(65, 75, 85);");
+        let res = ui::UiColor(Color::rgb_u8(65, 75, 85));
+        assert_eq!(style.to_ui_color().0, res.0)
+    }
+
+}

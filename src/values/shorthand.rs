@@ -4,7 +4,7 @@ use crate::{
     values::Parse,
 };
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct SidedValue<T> {
     pub top: T,
     pub right: T,
@@ -14,22 +14,22 @@ pub struct SidedValue<T> {
 
 impl<T: Clone + Copy> SidedValue<T> {
     #[inline]
-    fn new_4(top: T, right: T, bottom: T, left: T) -> Self {
+    pub(crate) fn new_4(top: T, right: T, bottom: T, left: T) -> Self {
         Self { top, right, bottom, left, }
     }
 
     #[inline]
-    fn new_3(top: T, right_left: T, bottom: T) -> Self {
+    pub(crate) fn new_3(top: T, right_left: T, bottom: T) -> Self {
         Self { top, right: right_left, bottom, left: right_left, }
     }
 
     #[inline]
-    fn new_2(top_bottom: T, right_left: T) -> Self {
+    pub(crate) fn new_2(top_bottom: T, right_left: T) -> Self {
         Self { top: top_bottom, right: right_left, bottom: top_bottom, left: right_left, }
     }
 
     #[inline]
-    fn new_1(value: T) -> Self {
+    pub(crate) fn new_1(value: T) -> Self {
         Self { top: value, right: value, bottom: value, left: value, }
     }
 
@@ -59,4 +59,63 @@ impl<T: Parse + Clone + Copy> Parse for SidedValue<T> {
     fn parse<'i, 't>(input: &mut Parser<'i, 't>) -> Result<Self, BevyCssParsingError<'i>> {
         Self::parse_internal(input, <T as Parse>::parse)
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_one_value() {
+        assert_eq!(
+            SidedValue::<usize>::new_1(1),
+            SidedValue {
+                top: 1,
+                right: 1,
+                bottom: 1,
+                left: 1
+            }
+        )
+    }
+
+    #[test]
+    fn test_two_values() {
+        assert_eq!(
+            SidedValue::<usize>::new_2(1, 2),
+            SidedValue {
+                top: 1,
+                right: 2,
+                bottom: 1,
+                left: 2
+            }
+        )
+    }
+
+    #[test]
+    fn test_three_values() {
+        assert_eq!(
+            SidedValue::<usize>::new_3(1, 2, 3),
+            SidedValue {
+                top: 1,
+                right: 2,
+                bottom: 3,
+                left: 2
+            }
+        )
+    }
+
+    #[test]
+    fn test_four_values() {
+        assert_eq!(
+            SidedValue::<usize>::new_4(1, 2, 3, 4),
+            SidedValue {
+                top: 1,
+                right: 2,
+                bottom: 3,
+                left: 4
+            }
+        )
+    }
+
+
 }

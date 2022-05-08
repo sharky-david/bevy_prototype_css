@@ -73,10 +73,10 @@ property_def!(JustifyContent, ui::JustifyContent, BevyPropertyDeclaration::Justi
 
 // Margin
 property_def!(Margin, SidedValue<LengthPercentageOrAuto>, BevyPropertyDeclaration::Margin);
-property_def!(MarginTop, LengthPercentageOrAuto, BevyPropertyDeclaration::Top);
-property_def!(MarginRight, LengthPercentageOrAuto, BevyPropertyDeclaration::Right);
-property_def!(MarginBottom, LengthPercentageOrAuto, BevyPropertyDeclaration::Bottom);
-property_def!(MarginLeft, LengthPercentageOrAuto, BevyPropertyDeclaration::Left);
+property_def!(MarginTop, LengthPercentageOrAuto, BevyPropertyDeclaration::MarginTop);
+property_def!(MarginRight, LengthPercentageOrAuto, BevyPropertyDeclaration::MarginRight);
+property_def!(MarginBottom, LengthPercentageOrAuto, BevyPropertyDeclaration::MarginBottom);
+property_def!(MarginLeft, LengthPercentageOrAuto, BevyPropertyDeclaration::MarginLeft);
 
 // Padding
 property_def!(Padding, SidedValue<LengthPercentageOrAuto>, BevyPropertyDeclaration::Padding);
