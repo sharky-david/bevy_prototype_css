@@ -1,5 +1,6 @@
 [package]
 name = "bevy_prototype_css"
+authors = ["sharky-david"]
 version = "0.1.0"
 edition = "2021"
 categories = ["game-engines", "gui", "ui"]
