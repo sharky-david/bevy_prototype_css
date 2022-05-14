@@ -9,7 +9,7 @@ If you like this project and would like to help make it better, please consider 
 
 To include this plugin in your project, add the following to your dependencies:
 
-    bevy_prototype_css = { git = "https://github.com/sharky-david/bevy_prototype_css", tag = "0.1" }
+    bevy_prototype_css = { git = "https://github.com/sharky-david/bevy_prototype_css" }
 
 Alternatively clone the repo if you would like to try the included examples.
 
