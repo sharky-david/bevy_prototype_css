@@ -116,7 +116,7 @@ time, then call `.to_style` on the same `CssStyle` multiple times.
 
 | `bevy_prototype_css` version | Minimum `bevy` version |
 |:----------------------------:|:----------------------:|
-|             0.1              |          0.6           |
+|             0.1              |          0.7           |
 
 ## References
 
