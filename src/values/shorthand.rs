@@ -63,6 +63,7 @@ impl<T: Parse + Clone + Copy> Parse for SidedValue<T> {
 
 #[cfg(test)]
 mod tests {
+    use crate::values::Number;
     use super::*;
 
     #[test]
@@ -117,5 +118,31 @@ mod tests {
         )
     }
 
+    #[test]
+    fn test_parse() {
+        assert_eq!(
+            SidedValue::<Number>::parse_str("1").unwrap(),
+            SidedValue::<Number>::new_1(Number(1.0))
+        );
+        assert_eq!(
+            SidedValue::<Number>::parse_str("1 2").unwrap(),
+            SidedValue::<Number>::new_2(Number(1.0), Number(2.0))
+        );
+        assert_eq!(
+            SidedValue::<Number>::parse_str("1 2 3").unwrap(),
+            SidedValue::<Number>::new_3(Number(1.0), Number(2.0), Number(3.0))
+        );
+        assert_eq!(
+            SidedValue::<Number>::parse_str("1 2 3 4").unwrap(),
+            SidedValue::<Number>::new_4(Number(1.0), Number(2.0), Number(3.0), Number(4.0))
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_bad_parse() {
+        SidedValue::<Number>::parse_str("").unwrap();
+        SidedValue::<Number>::parse_str("1 2 3 4 5").unwrap();
+    }
 
 }

@@ -1,5 +1,5 @@
 use std::fmt;
-use cssparser::{CowRcStr, Parser};
+use cssparser::{CowRcStr, Parser, ParserInput};
 use crate::errors::BevyCssParsingError;
 
 /// Interface for values to call the appropriate parsing code
@@ -7,6 +7,13 @@ pub trait Parse: Sized {
     fn parse<'i, 't>(
         input: &mut Parser<'i, 't>
     ) -> Result<Self, BevyCssParsingError<'i>>;
+
+    // Mainly to make testing easier
+    fn parse_str<'i>(str: &'i str) -> Result<Self, BevyCssParsingError<'i>> {
+        let mut parser_input = ParserInput::new(str);
+        let mut input = Parser::new(&mut parser_input);
+        Self::parse(&mut input)
+    }
 }
 
 /// Parsing where `none` could be used
@@ -69,4 +76,3 @@ impl AllowedValues {
         }
     }
 }
-
