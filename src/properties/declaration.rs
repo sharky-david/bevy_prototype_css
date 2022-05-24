@@ -230,7 +230,8 @@ mod tests {
     use cssparser::{ParseErrorKind, Parser, ParserInput};
     use crate::values::{
         generic::{NonNegative, Numeric},
-        length::{AbsoluteLength, NoCalcLength},
+        absolute_length::AbsoluteLength,
+        length::{NoCalcLength},
         LengthPercentage,
         Number,
         percentage::Percentage,
