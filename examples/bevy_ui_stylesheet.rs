@@ -25,7 +25,7 @@ fn setup(
     asset_server: Res<AssetServer>
 ) {
     // ui camera
-    commands.spawn_bundle(UiCameraBundle::default());
+    commands.spawn_bundle(Camera2dBundle::default());
 
     // load .css file
     let _css_handle: Handle<CssStylesheet> = asset_server.load("styles/bevy_ui.css");
@@ -48,14 +48,13 @@ fn setup(
                             // text
                             parent
                                 .spawn_bundle(TextBundle {
-                                    text: Text::with_section(
+                                    text: Text::from_section(
                                         "Text Example",
                                         TextStyle {
                                             font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                                             font_size: 30.0,
                                             color: Color::WHITE,
                                         },
-                                        Default::default(),
                                     ),
                                     ..Default::default()
                                 })
@@ -70,14 +69,13 @@ fn setup(
                     // Title
                     parent
                         .spawn_bundle(TextBundle {
-                            text: Text::with_section(
+                            text: Text::from_section(
                                 "Scrolling list",
                                 TextStyle {
                                     font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                                     font_size: 25.,
                                     color: Color::WHITE,
                                 },
-                                Default::default(),
                             ),
                             ..Default::default()
                         })
@@ -97,7 +95,7 @@ fn setup(
                                     for i in 0..30 {
                                         parent
                                             .spawn_bundle(TextBundle {
-                                                text: Text::with_section(
+                                                text: Text::from_section(
                                                     format!("Item {}", i),
                                                     TextStyle {
                                                         font: asset_server
@@ -105,7 +103,6 @@ fn setup(
                                                         font_size: 20.,
                                                         color: Color::WHITE,
                                                     },
-                                                    Default::default(),
                                                 ),
                                                 ..Default::default()
                                             })

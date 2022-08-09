@@ -1,4 +1,4 @@
-use bevy::{math, ui};
+use bevy::{ui};
 use bevy::reflect::Reflect;
 use crate::{
     context::CssContext,
@@ -34,7 +34,7 @@ impl ContextualFrom<LengthPercentageOrAuto> for ui::Val {
     }
 }
 
-impl<U, T> ContextualFrom<SidedValue<T>> for math::Rect<U>
+impl<U, T> ContextualFrom<SidedValue<T>> for ui::UiRect<U>
 where
     U: Reflect + PartialEq,
     T: ContextualInto<U>

@@ -19,8 +19,8 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    // ui camera
-    commands.spawn_bundle(UiCameraBundle::default());
+    // need a camera
+    commands.spawn_bundle(Camera2dBundle::default());
 
     // a CssContext is needed to correctly parse relative css lengths (e.g. em)
     // you must provide one for this framework
@@ -56,14 +56,13 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                             // text
                             parent.spawn_bundle(TextBundle {
                                 style: CssStyle("margin: 5px").to_style(&css_context),
-                                text: Text::with_section(
+                                text: Text::from_section(
                                     "Text Example",
                                     TextStyle {
                                         font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                                         font_size: 30.0,
                                         color: Color::WHITE,
                                     },
-                                    Default::default(),
                                 ),
                                 ..Default::default()
                             });
@@ -83,14 +82,13 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                         // @fixme should be centered, but isn't.  Maybe requires width: undefined?
                         style: CssStyle("height: 25px; margin-left: auto; margin-right: auto;")
                             .to_style(&css_context),
-                        text: Text::with_section(
+                        text: Text::from_section(
                             "Scrolling list",
                             TextStyle {
                                 font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                                 font_size: 25.,
                                 color: Color::WHITE,
                             },
-                            Default::default(),
                         ),
                         ..Default::default()
                     });
@@ -120,7 +118,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                                         parent.spawn_bundle(TextBundle {
                                             style: CssStyle("height: 20px; flex-shrink: 0; margin-left: auto; margin-right: auto;")
                                                 .to_style(&css_context),
-                                            text: Text::with_section(
+                                            text: Text::from_section(
                                                 format!("Item {}", i),
                                                 TextStyle {
                                                     font: asset_server
@@ -128,7 +126,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                                                     font_size: 20.,
                                                     color: Color::WHITE,
                                                 },
-                                                Default::default(),
                                             ),
                                             ..Default::default()
                                         });

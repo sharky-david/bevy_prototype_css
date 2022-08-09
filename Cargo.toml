@@ -11,14 +11,14 @@ readme = "Readme.md"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-bevy = "0.7.0"
+bevy = "0.8.0"
 anyhow = "1.0.4"
 cssparser = "0.28.1"
 selectors = "0.23.0"
 smallvec = "1.8.0"
 
 [dev-dependencies]
-bevy = "0.7.0"
+bevy = "0.8.0"
 
 [[example]]
 name = "bevy_ui_inline"
